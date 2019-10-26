@@ -13,6 +13,7 @@ var canvas = `
 </div>`
 
 var dwface = chrome.runtime.getURL("images/dale_winton_face.webp");
+alert(dwface)
 var canvasBgImage = chrome.runtime.getURL("canvas/face.jpg");
 
 var loader = `
