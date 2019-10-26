@@ -34,6 +34,7 @@ class GameObject {
         this.w = w
         this.h = h
         this.coefResitution = 0.6
+        this.coefFriction = 0.95
         this.color = 'white'
 
         this.dx = 0
@@ -79,18 +80,22 @@ class GameObject {
         if (this.x < GLOBALS.world.left) {
             this.x = GLOBALS.world.left
             this.dx = this.dx * -this.coefResitution
+            this.dy *= this.coefFriction
         }
         if (this.right > GLOBALS.world.right) {
             this.right = GLOBALS.world.right
             this.dx = this.dx * -this.coefResitution
+            this.dy *= this.coefFriction
         }
         if (this.y < GLOBALS.world.bottom) {
             this.y = GLOBALS.world.bottom
             this.dy = this.dy * -this.coefResitution
+            this.dx *= this.coefFriction
         }
         if (this.top > GLOBALS.world.top) {
             this.top = GLOBALS.world.top
             this.dy = this.dy * -this.coefResitution
+            this.dx *= this.coefFriction
         }
 
         for (const object of objectsInSpace) {
