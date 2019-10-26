@@ -182,7 +182,7 @@ class GameObject {
     }
 }
 
-class Wall extends GameObject { }
+class Wall extends GameObject {}
 
 class Player extends GameObject {
     collide(object) {
@@ -216,6 +216,10 @@ class Player extends GameObject {
         
         super.update(objectsInSpace)
     }
+
+    draw(ctx) {
+        ctx.drawImage(GLOBALS.trolleyImage, this.x, this.y, this.w, this.h)
+    }
 }
 
 function setScale(canvas, targetWidth = 1280, targetHeight = 720) {
@@ -242,7 +246,9 @@ function drawBackground(ctx) {
         left,
         right,
     } = GLOBALS.world
-    ctx.drawImage(GLOBALS.backgroundImage, left, bottom, right - left, top - bottom)
+    const ptrn = ctx.createPattern(GLOBALS.backgroundImage, 'repeat')
+    ctx.fillStyle = ptrn
+    ctx.fillRect(left, bottom, right - left, top - bottom)
 }
 
 function draw(c, ctx) {
@@ -314,10 +320,16 @@ async function cacheImages(images) {
 async function main() {
     const [
         backgroundImage,
+        shelvingImage,
+        trolleyImage
     ] = await cacheImages([
-        'face.jpg',
+        'small_tile.jpg',
+        'shelving_smaller.png',
+        'shopping-cart.png'
     ])
     GLOBALS.backgroundImage = backgroundImage
+    GLOBALS.shelvingImage = shelvingImage
+    GLOBALS.trolleyImage = trolleyImage
 
     const c = document.createElement('canvas')
     document.getElementsByTagName('body')[0].append(c)
@@ -335,11 +347,11 @@ async function main() {
         x < GLOBALS.world.right - 100;
         x += aisleWidth
     ) {
-        walls.push(
-            new Wall({
-                x, y: -900, w: 100, h: 1800,
-            }),
-        )
+        const wall = new Wall({
+            x, y: -900, w: 100, h: 1800,
+        })
+        wall.color = ctx.createPattern(GLOBALS.shelvingImage, 'repeat')
+        walls.push(wall)
     }
 
     GLOBALS.player = new Player({
