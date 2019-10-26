@@ -6,5 +6,6 @@ jobs:
     steps:
       - checkout
       - run: npm i
+      - run: npx lerna bootstrap
       - run: npm run lint
       - run: npm run test
