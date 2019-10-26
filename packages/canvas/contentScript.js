@@ -3,15 +3,6 @@ const base = `
   </div>
 `
 
-const canvas = `
-<div id='dkCanvas' style='position:relative;top:0;left:0;height:200;width:100%;background-color:red;z-index:10000'>
-  <canvas id='canvas' style='background-color:white;float:left'></canvas>
-  <div id='dkBasket'style='float:left'>Basket (value = <span id='dkBasketTotal'></span>)
-    <ul id='dkBasketList'></ul>
-  </div>
-  <div style='clear:both'></div>
-</div>`
-
 const dwface = chrome.runtime.getURL('images/dale_winton_face.webp')
 alert(dwface)
 const images = [
@@ -36,7 +27,8 @@ const loader = `
 </div>`
 
 
-document.getElementsByTagName('BODY')[0].insertAdjacentHTML('afterbegin', base)
+const body = document.getElementsByTagName('BODY')[0]
+body.insertAdjacentHTML('afterbegin', base)
 
 showContent(loader)
 
@@ -45,8 +37,7 @@ function showContent(content) {
 }
 
 $('#dkStartGame').click(() => {
-    console.log('Hello world!')
-    showContent(canvas)
+    body.innerHTML = '<div id="body" style="position: fixed; width: 100%; height: 100%;"><canvas id="canvas"></canvas></div>'
     start(images)
 })
 

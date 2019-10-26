@@ -224,7 +224,7 @@ class Player extends GameObject {
 }
 
 function setScale(canvas, targetWidth = 1280, targetHeight = 720) {
-    const body = document.getElementsByTagName('body')[0]
+    const body = document.getElementById('body')
     const scaleX = body.clientWidth / targetWidth
     const scaleY = body.clientHeight / targetHeight
     const scale = Math.min(scaleX, scaleY)
@@ -329,8 +329,6 @@ async function main(images) {
     GLOBALS.trolleyImage = trolleyImage
 
     const c = document.getElementById('canvas')
-    // document.getElementsByTagName('body')[0].append(c)
-    console.log(c)
 
     setScale(c)
     window.addEventListener('resize', () => setScale(c))
