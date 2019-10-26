@@ -7,11 +7,7 @@ const io = require('socket.io')(http)
 const allPlayers = []
 
 app.use(bodyParser())
-
-app.get('/', (req, res) => {
-    console.log(dirname + '/index.html')
-    res.sendFile(__dirname + '/index.html')
-})
+app.use(express.static('www'))
 
 app.post('/register-player', (req, res, next) => {
     const playerName = req.body.name
@@ -26,13 +22,6 @@ app.post('/register-player', (req, res, next) => {
         allPlayers
     })
 })
-
-console.log('STARTED')
-
-// io.on('connection', socket => {
-//     console.log('CONNECTION')
-//     io.sockets.emit('newConnection', allPlayers)
-// })
 
 http.listen(3000, function(){
     console.log('listening on *:3000')
