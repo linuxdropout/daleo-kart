@@ -11,6 +11,20 @@ const GLOBALS = {
     },
 }
 
+function overlaps(obj1, obj2) {
+    if (obj1 === obj2) return false
+    if (
+        obj1.right > obj2.x
+        && obj1.x < obj2.right
+        && obj1.top > obj2.y
+        && obj1.y < obj2.top
+    ) {
+        return true
+    }
+
+    return false
+}
+
 class GameObject {
     constructor({
         x, y, w, h,
@@ -51,7 +65,7 @@ class GameObject {
         this.ddy -= y
     }
 
-    update() {
+    update(objectsInSpace) {
         this.dx += this.ddx
         this.x += this.dx
         this.ddx = 0
@@ -78,6 +92,13 @@ class GameObject {
             this.top = GLOBALS.world.top
             this.dy = this.dy * -this.coefResitution
         }
+
+        for (const object of objectsInSpace) {
+            if (overlaps(this, object)) {
+                if (this.collide) this.collide(object)
+                if (object.collide) object.collide(this)
+            }
+        }
     }
 
     draw(ctx) {
@@ -99,7 +120,7 @@ function setScale(canvas, targetWidth = 1280, targetHeight = 720) {
 
 function update() {
     for (const object of GLOBALS.GAME_OBJECTS) {
-        object.update()
+        object.update(GLOBALS.GAME_OBJECTS)
     }
 }
 
@@ -182,11 +203,32 @@ async function main() {
     const ctx = c.getContext('2d')
 
     GLOBALS.player = new GameObject({
-        x: 50,
-        y: 50,
+        x: -25,
+        y: 925,
         w: 50,
         h: 50,
     })
+    GLOBALS.player.collide = obj => {
+        obj.color = 'red'
+    }
+
+    const obstacles = [
+        new GameObject({
+            x: 100, y: 100, w: 100, h: 50,
+        }),
+        new GameObject({
+            x: 300, y: 300, w: 100, h: 50,
+        }),
+        new GameObject({
+            x: 500, y: 500, w: 100, h: 50,
+        }),
+        new GameObject({
+            x: -450, y: -450, w: 100, h: 50,
+        }),
+        new GameObject({
+            x: 700, y: 700, w: 100, h: 50,
+        }),
+    ]
 
     setupKeyBindings(GLOBALS.player)
 
