@@ -27,42 +27,25 @@ function overlaps(obj1, obj2) {
 
 let allPlayers = []
 
-const enterUsername = name => {
-    $.ajax({
-        url: '/register-player',
-        type: 'POST',
-        data: {
-            name
-        },
-        success: function(res) {
-            const registrationForm = document.getElementById('registration-form')
-            registrationForm.parentElement.removeChild(registrationForm)
-            setInitialHighScores(res.allPlayers)
-            setUpSockets()
-            main()
-        }
-    })
-}
-
 const setUpSockets = () => {
     const socket = io()
-    socket.on('newPlayer', function(playerDetails) {
+    socket.on('newPlayer', playerDetails => {
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
         const newElement = document.createElement('div')
-        var newContent = document.createTextNode(`${playerDetails.name}: ${playerDetails.score}`); 
+        const newContent = document.createTextNode(`${playerDetails.name}: ${playerDetails.score}`)
         newElement.append(newContent)
         scoreBoard.append(newElement)
     })
 }
 
-const setInitialHighScores = (players) => {
+const setInitialHighScores = players => {
     allPlayers = players
 
     const scoreBoard = document.getElementById('score-board')
     const scoreElements = players.map(player => {
         const newElement = document.createElement('div')
-        var newContent = document.createTextNode(`${player.name}: ${player.score}`); 
+        const newContent = document.createTextNode(`${player.name}: ${player.score}`)
         newElement.append(newContent)
 
         return newElement
@@ -288,4 +271,22 @@ async function main() {
     setupKeyBindings(GLOBALS.player)
 
     loop(c, ctx, GLOBALS.msPerUpdate)
+}
+
+// eslint-disable-next-line no-unused-vars
+const enterUsername = name => {
+    $.ajax({
+        url: '/register-player',
+        type: 'POST',
+        data: {
+            name,
+        },
+        success(res) {
+            const registrationForm = document.getElementById('registration-form')
+            registrationForm.parentElement.removeChild(registrationForm)
+            setInitialHighScores(res.allPlayers)
+            setUpSockets()
+            main()
+        },
+    })
 }
