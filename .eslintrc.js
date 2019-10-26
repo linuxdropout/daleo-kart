@@ -21,6 +21,10 @@ module.exports = {
   plugins: [
     'react',
   ],
+  globals: {
+    '$': 'writeable',
+    'io': 'writeable'
+  },
   rules: {
     'semi': ['error', 'never'],
     indent: [

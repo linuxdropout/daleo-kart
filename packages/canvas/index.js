@@ -66,15 +66,14 @@ const setUpSockets = () => {
     })
 }
 
-const setInitialHighScores = (players) => {
+const setInitialHighScores = players => {
     allPlayers = players
 
     const scoreBoard = document.getElementById('score-board')
     const scoreElements = players.map(player => {
         const newElement = document.createElement('div')
         newElement.className = 'player-score'
-        var newContent = document.createTextNode(`${player.name}: ${player.score}`); 
-        newElement.append(newContent)
+        newElement.innerHTML = `${player.name}: ${player.score}`
 
         return newElement
     })
@@ -299,4 +298,22 @@ async function main() {
     setupKeyBindings(GLOBALS.player)
 
     loop(c, ctx, GLOBALS.msPerUpdate)
+}
+
+// eslint-disable-next-line no-unused-vars
+const enterUsername = name => {
+    $.ajax({
+        url: '/register-player',
+        type: 'POST',
+        data: {
+            name,
+        },
+        success(res) {
+            const registrationForm = document.getElementById('registration-form')
+            registrationForm.parentElement.removeChild(registrationForm)
+            setInitialHighScores(res.allPlayers)
+            setUpSockets()
+            main()
+        },
+    })
 }
