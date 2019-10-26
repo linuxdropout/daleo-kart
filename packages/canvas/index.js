@@ -25,7 +25,9 @@ function overlaps(obj1, obj2) {
     return false
 }
 
+const socket = io()
 let allPlayers = []
+let thisPlayer = ''
 
 const enterUsername = name => {
     $.ajax({
@@ -37,6 +39,7 @@ const enterUsername = name => {
         success: function(res) {
             const registrationForm = document.getElementById('registration-form')
             registrationForm.parentElement.removeChild(registrationForm)
+            thisPlayer = name
             setInitialHighScores(res.allPlayers)
             setUpSockets()
             main()
@@ -45,14 +48,19 @@ const enterUsername = name => {
 }
 
 const setUpSockets = () => {
-    const socket = io()
     socket.on('newPlayer', function(playerDetails) {
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
         const newElement = document.createElement('div')
-        var newContent = document.createTextNode(`${playerDetails.name}: ${playerDetails.score}`); 
-        newElement.append(newContent)
+        newElement.innerHTML = `${playerDetails.name}: ${playerDetails.score}`
         scoreBoard.append(newElement)
+    })
+    socket.on('scoreIncrease', scoreData => {
+        const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
+        playerToGivePoints.score += scoreData.points
+        const scoreElement = document.getElementsByClassName('player-score').find(el => {
+            el.innerHTML.indexOf(scoreData.playerName)
+        }).innerHTML = `${playerToGivePoints.playerName}: ${playerToGivePoints.score}`
     })
 }
 
@@ -62,6 +70,7 @@ const setInitialHighScores = (players) => {
     const scoreBoard = document.getElementById('score-board')
     const scoreElements = players.map(player => {
         const newElement = document.createElement('div')
+        newElement.class = 'player-score'
         var newContent = document.createTextNode(`${player.name}: ${player.score}`); 
         newElement.append(newContent)
 
@@ -174,6 +183,11 @@ function update() {
     for (const object of GLOBALS.GAME_OBJECTS) {
         object.update(GLOBALS.GAME_OBJECTS)
     }
+    console.log('INCREASE SCORE')
+    socket.emit('scoreIncrease', {
+        playerName: thisPlayer,
+        points: 1
+    })
 }
 
 function drawBackground(ctx) {

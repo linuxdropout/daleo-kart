@@ -11,16 +11,34 @@ app.use(express.static('www'))
 
 app.post('/register-player', (req, res, next) => {
     const playerName = req.body.name
-    const playerData = {
-        name: playerName,
-        score: 0
+    if (allPlayers.filter(player => player.name === playerName).length === 0) {
+        const playerData = {
+            name: playerName,
+            score: 0
+        }
+        allPlayers.push(playerData)
+        io.sockets.emit('newPlayer', playerData)
+        return res.json({
+            success: true,
+            allPlayers
+        })
     }
-    allPlayers.push(playerData)
-    io.sockets.emit('newPlayer', playerData)
+
     res.json({
-        success: true,
-        allPlayers
+        success: false,
+        message: 'A player with that name is already playing'
     })
+})
+
+io.on('connection', socket => {
+    console.log('CONNECTIon')
+})
+
+io.on('scoreIncrease', scoreData => {
+    console.log(scoreData)
+    const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
+    playerToGivePoints.score += scoreData.points
+    io.emit('scoreIncrease', scoreData)
 })
 
 http.listen(3000, function(){
