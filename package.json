@@ -26,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/wedgehead92/daleo-kart/issues"
   },
-  "homepage": "https://github.com/wedgehead92/daleo-kart#readme"
+  "homepage": "https://github.com/wedgehead92/daleo-kart#readme",
+  "dependencies": {
+    "cors": "^2.8.5"
+  }
 }

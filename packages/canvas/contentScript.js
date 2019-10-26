@@ -23,28 +23,45 @@ var welcomeText=`<p>Hey!! Dale here.</p>
 
 DalesVoice.speak(welcomeText);
 
-setTimeout(function(){
-  DalesVoice.hide();
-}, 3000)
+//to be sorted later
+setTimeout(() => {
+  $('#dkStartGame').click(() => {
 
-function showContent(content){
-  document.getElementById("daleokart").innerHTML = content;
-}
+    const body = document.getElementsByTagName('BODY')[0]
 
-$('#dkStartGame').click(() => {
+    body.innerHTML = `
+      <style>
+        #score-board {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          color: white;
+        }
+      </style>
+      <div id='body' style="position: fixed; width: 100%; height: 100%;">
+        <div id='registration-form'>
+          <input type='text' name='name' id='username-input'>
+          <button id='form-submit'>Start</button>
+        </div>
+        <div id='score-board'></div>
+      </div>
+    `
+  
+    const images = [
+      chrome.runtime.getURL('images/small_tile.jpg'),
+      chrome.runtime.getURL('images/shelving_smaller.png'),
+      chrome.runtime.getURL('images/shopping-cart.png'),
+    ]
+  
+    document.getElementById('form-submit').addEventListener('click', () => {
+      const name = document.getElementById('username-input').value
+      enterUsername(name)
+    })
+  
+    start(images)
+  })
+}, 2000);
 
-  const body = document.getElementsByTagName('BODY')[0]
-  //body.insertAdjacentHTML('afterbegin', base)
-
-  const images = [
-    chrome.runtime.getURL('images/small_tile.jpg'),
-    chrome.runtime.getURL('images/shelving_smaller.png'),
-    chrome.runtime.getURL('images/shopping-cart.png'),
-  ]
-
-  body.innerHTML = '<div id="body" style="position: fixed; width: 100%; height: 100%;"><canvas id="canvas"></canvas></div>'
-  start(images)
-})
 
 /*
 var list = document.getElementsByTagName("BODY")[0].insertAdjacentHTML("afterbegin", );

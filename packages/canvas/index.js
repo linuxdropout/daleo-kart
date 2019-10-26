@@ -36,7 +36,7 @@ let allPlayers = []
 
 const setUpSockets = () => {
     if (!io) return
-    const socket = io()
+    const socket = io('https://aliptahq.com')
     socket.on('newPlayer', playerDetails => {
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
@@ -331,16 +331,9 @@ async function cacheImages(images) {
 }
 
 async function main(images) {
-    const [
-        backgroundImage,
-        shelvingImage,
-        trolleyImage,
-    ] = await cacheImages(images)
-    GLOBALS.backgroundImage = backgroundImage
-    GLOBALS.shelvingImage = shelvingImage
-    GLOBALS.trolleyImage = trolleyImage
-
-    const c = document.getElementById('canvas')
+    const c = document.createElement('canvas')
+    const body = document.getElementById('body')
+    body.append(c)
 
     setScale(c)
     window.addEventListener('resize', () => setScale(c))
@@ -376,7 +369,7 @@ async function main(images) {
 
 // eslint-disable-next-line no-unused-vars
 const enterUsername = async name => {
-    const response = await fetch('/register-player', {
+    const response = await fetch('https://aliptahq.com/register-player', {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
@@ -391,12 +384,24 @@ const enterUsername = async name => {
         }),
     })
     const res = await response.json()
-    const registrationForm = document.getElementById('registration-form')
-    registrationForm.parentElement.removeChild(registrationForm)
-    setInitialHighScores(res.allPlayers)
-    setUpSockets()
+    if (res.success) {
+        const registrationForm = document.getElementById('registration-form')
+        registrationForm.parentElement.removeChild(registrationForm)
+        setInitialHighScores(res.allPlayers)
+        setUpSockets()
+        main()
+    } else {
+        console.log(res)
+    }
 }
 
-function start(images) {
-    main(images)
+async function start(images) {
+    const [
+        backgroundImage,
+        shelvingImage,
+        trolleyImage,
+    ] = await cacheImages(images)
+    GLOBALS.backgroundImage = backgroundImage
+    GLOBALS.shelvingImage = shelvingImage
+    GLOBALS.trolleyImage = trolleyImage
 }
