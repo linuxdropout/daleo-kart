@@ -4,7 +4,6 @@
   "description": "",
   "main": "scraper.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "docker build -t puppeteer-chrome-linux .",
     "scrape": "sh runscrape.js",
     "start": "npm run build && npm run scrape"

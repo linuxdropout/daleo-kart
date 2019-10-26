@@ -12,7 +12,7 @@ async function launchBrowser() {
         const [page] = await browser.pages()
 
         await page.goto(amazonURL)
-
+        await crawl(page)
         await browser.close()
     } catch (err) {
         console.error(err)
