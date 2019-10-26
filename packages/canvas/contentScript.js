@@ -14,7 +14,11 @@ const canvas = `
 
 const dwface = chrome.runtime.getURL('images/dale_winton_face.webp')
 alert(dwface)
-const canvasBgImage = chrome.runtime.getURL('images/face.jpg')
+const images = [
+    chrome.runtime.getURL('images/small_tile.jpg'),
+    chrome.runtime.getURL('images/shelving_smaller.png'),
+    chrome.runtime.getURL('images/shopping-cart.png'),
+]
 
 const loader = `
 <div id='dkLoader' style='position:relative;top:0;left:0;height:200;width:100%;background-color:white;z-index:10000'>
@@ -37,15 +41,13 @@ document.getElementsByTagName('BODY')[0].insertAdjacentHTML('afterbegin', base)
 showContent(loader)
 
 function showContent(content) {
-  document.getElementById('daleokart').innerHTML = content
+    document.getElementById('daleokart').innerHTML = content
 }
 
 $('#dkStartGame').click(() => {
-  console.log('Hello world!')
-  showContent(canvas)
-  start([
-    canvasBgImage,
-  ])
+    console.log('Hello world!')
+    showContent(canvas)
+    start(images)
 })
 
 /*

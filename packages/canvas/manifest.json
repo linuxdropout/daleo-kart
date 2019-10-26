@@ -36,6 +36,10 @@
   "web_accessible_resources": [
     "images/dale_winton_face.webp",
     "images/dalewinton-128.png",
-    "images/face.jpg"
+    "images/shelving_small.png",
+    "images/shelving_smaller.png",
+    "images/shelving.png",
+    "images/shopping-cart.png",
+    "images/small_tile.jpg"
   ]
 }
