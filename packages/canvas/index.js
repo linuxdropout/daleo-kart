@@ -25,17 +25,26 @@ function overlaps(obj1, obj2) {
     return false
 }
 
+const socket = io()
 let allPlayers = []
+let thisPlayer = ''
 
 const setUpSockets = () => {
-    const socket = io()
-    socket.on('newPlayer', playerDetails => {
+    socket.on('newPlayer', function(playerDetails) {
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
         const newElement = document.createElement('div')
-        const newContent = document.createTextNode(`${playerDetails.name}: ${playerDetails.score}`)
-        newElement.append(newContent)
+        newElement.innerHTML = `${playerDetails.name}: ${playerDetails.score}`
         scoreBoard.append(newElement)
+    })
+    socket.on('scoreIncrease', scoreData => {
+        const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
+        if (playerToGivePoints) {
+            playerToGivePoints.score += scoreData.points
+            Array.from(document.getElementsByClassName('player-score')).find(el => {
+                return el.innerHTML.indexOf(scoreData.playerName) > -1
+            }).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
+        }
     })
 }
 
@@ -45,8 +54,8 @@ const setInitialHighScores = players => {
     const scoreBoard = document.getElementById('score-board')
     const scoreElements = players.map(player => {
         const newElement = document.createElement('div')
-        const newContent = document.createTextNode(`${player.name}: ${player.score}`)
-        newElement.append(newContent)
+        newElement.className = 'player-score'
+        newElement.innerHTML = `${player.name}: ${player.score}`
 
         return newElement
     })
