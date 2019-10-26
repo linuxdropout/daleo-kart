@@ -10,7 +10,7 @@
   },"content_scripts": [
     {
       "matches": ["https://*.amazon.co.uk/*/product/*"],
-      "js": ["jquery-3.4.1.min.js", "contentScript.js"]
+      "js": ["jquery-3.4.1.min.js", "dkBasket.js", "contentScript.js"]
     }
   ],
   "page_action": {
@@ -28,5 +28,6 @@
     "48": "images/dalewinton-48.png",
     "128": "images/dalewinton-128.png"
   },
-  "manifest_version": 2
+  "manifest_version": 2,
+  "web_accessible_resources": ["images/dale_winton_face.webp", "images/dalewinton-128.png"]
 }
