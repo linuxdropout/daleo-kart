@@ -26,8 +26,14 @@ function overlaps(obj1, obj2) {
 }
 
 const socket = io()
-
+const keysDown = {
+    up: false,
+    down: false,
+    left: false,
+    right: false
+}
 let allPlayers = []
+
 
 const setUpSockets = () => {
     socket.on('newPlayer', playerDetails => {
@@ -203,6 +209,13 @@ class Player extends GameObject {
             }
         }
     }
+
+    update(objectsInSpace) {
+        this.ddx = keysDown.right ? 1 : (keysDown.left ? -1 : 0)
+        this.ddy = keysDown.down ? 1 : (keysDown.up ? -1 : 0)
+        
+        super.update(objectsInSpace)
+    }
 }
 
 function setScale(canvas, targetWidth = 1280, targetHeight = 720) {
@@ -260,13 +273,25 @@ function loop(c, ctx, msPerUpdate, time = Date.now(), timeSinceLastUpdate = 0) {
 function setupKeyBindings(player) {
     document.addEventListener('keydown', event => {
         switch (event.key) {
-            case 'ArrowRight': player.accelerate({ x: 1 })
+            case 'ArrowRight': keysDown.right = true
                 break
-            case 'ArrowLeft': player.accelerate({ x: -1 })
+            case 'ArrowLeft': keysDown.left = true
                 break
-            case 'ArrowUp': player.accelerate({ y: 1 })
+            case 'ArrowUp': keysDown.up = true
                 break
-            case 'ArrowDown': player.accelerate({ y: -1 })
+            case 'ArrowDown': keysDown.down = true
+                break
+        }
+    })
+    document.addEventListener('keyup', event => {
+        switch (event.key) {
+            case 'ArrowRight': keysDown.right = false
+                break
+            case 'ArrowLeft': keysDown.left = false
+                break
+            case 'ArrowUp': keysDown.up = false
+                break
+            case 'ArrowDown': keysDown.down = false
                 break
         }
     })
