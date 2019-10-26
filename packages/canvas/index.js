@@ -25,17 +25,18 @@ function overlaps(obj1, obj2) {
     return false
 }
 
-const socket = io()
 const keysDown = {
     up: false,
     down: false,
     left: false,
-    right: false
+    right: false,
 }
 let allPlayers = []
 
 
 const setUpSockets = () => {
+    if (!io) return
+    const socket = io()
     socket.on('newPlayer', playerDetails => {
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
@@ -213,7 +214,7 @@ class Player extends GameObject {
     update(objectsInSpace) {
         this.ddx = keysDown.right ? 1 : (keysDown.left ? -1 : 0)
         this.ddy = keysDown.down ? 1 : (keysDown.up ? -1 : 0)
-        
+
         super.update(objectsInSpace)
     }
 }
@@ -311,16 +312,15 @@ async function cacheImages(images) {
     return Promise.all(imagePromises)
 }
 
-async function main() {
+async function main(images) {
     const [
         backgroundImage,
-    ] = await cacheImages([
-        'face.jpg',
-    ])
+    ] = await cacheImages(images)
     GLOBALS.backgroundImage = backgroundImage
 
-    const c = document.createElement('canvas')
-    document.getElementsByTagName('body')[0].append(c)
+    const c = document.getElementById('canvas')
+    // document.getElementsByTagName('body')[0].append(c)
+    console.log(c)
 
     setScale(c)
     window.addEventListener('resize', () => setScale(c))
@@ -362,26 +362,21 @@ const enterUsername = async name => {
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
-          'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         redirect: 'follow',
         referrer: 'no-referrer',
         body: JSON.stringify({
-            name
-        })
+            name,
+        }),
     })
     const res = await response.json()
     const registrationForm = document.getElementById('registration-form')
     registrationForm.parentElement.removeChild(registrationForm)
     setInitialHighScores(res.allPlayers)
     setUpSockets()
-    main()
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('form-submit').addEventListener('click', () => {
-        const name = document.getElementById('username-input').value
-
-        enterUsername(name)
-    })
-})
+function start(images) {
+    main(images)
+}

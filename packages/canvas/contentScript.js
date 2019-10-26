@@ -1,9 +1,9 @@
-var base=`
+const base = `
   <div id='daleokart' style='position:relative;top:0;left:0;width:100%;background-color:white;z-index:10000'>
   </div>
 `
 
-var canvas = `
+const canvas = `
 <div id='dkCanvas' style='position:relative;top:0;left:0;height:200;width:100%;background-color:red;z-index:10000'>
   <canvas id='canvas' style='background-color:white;float:left'></canvas>
   <div id='dkBasket'style='float:left'>Basket (value = <span id='dkBasketTotal'></span>)
@@ -12,14 +12,14 @@ var canvas = `
   <div style='clear:both'></div>
 </div>`
 
-var dwface = chrome.runtime.getURL("images/dale_winton_face.webp");
+const dwface = chrome.runtime.getURL('images/dale_winton_face.webp')
 alert(dwface)
-var canvasBgImage = chrome.runtime.getURL("canvas/face.jpg");
+const canvasBgImage = chrome.runtime.getURL('images/face.jpg')
 
-var loader = `
+const loader = `
 <div id='dkLoader' style='position:relative;top:0;left:0;height:200;width:100%;background-color:white;z-index:10000'>
   <div style="float:left">
-    <img src = "` + dwface + `" style="height:100px;width:100px" style="float:left"/>
+    <img src = "${dwface}" style="height:100px;width:100px" style="float:left"/>
   </div>
   <div style="float:left">
     <p>Hey!! Dale here.</p>
@@ -32,18 +32,21 @@ var loader = `
 </div>`
 
 
-document.getElementsByTagName("BODY")[0].insertAdjacentHTML("afterbegin", base);
+document.getElementsByTagName('BODY')[0].insertAdjacentHTML('afterbegin', base)
 
-showContent(loader);
+showContent(loader)
 
-function showContent(content){
-  document.getElementById("daleokart").innerHTML = content;
+function showContent(content) {
+  document.getElementById('daleokart').innerHTML = content
 }
 
-$("#dkStartGame").click(function() {
-  showContent(canvas);
-  main(canvasBgImage);
-});
+$('#dkStartGame').click(() => {
+  console.log('Hello world!')
+  showContent(canvas)
+  start([
+    canvasBgImage,
+  ])
+})
 
 /*
 var list = document.getElementsByTagName("BODY")[0].insertAdjacentHTML("afterbegin", );
