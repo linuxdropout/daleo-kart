@@ -181,23 +181,23 @@ class Wall extends GameObject { }
 class Player extends GameObject {
     collide(object) {
         if (object instanceof Wall) {
-            if (this.right > object.left && this.right - this.dx < object.left) {
-                this.right = object.left
+            if (this.right > object.left && this.right - this.dx <= object.left) {
+                this.right = object.left - 1
                 this.dx *= -this.coefResitution
                 this.dy *= this.coefFriction
             }
-            if (this.left < object.right && this.left - this.dx > object.right) {
-                this.left = object.right
+            if (this.left < object.right && this.left - this.dx >= object.right) {
+                this.left = object.right + 1
                 this.dx *= -this.coefResitution
                 this.dy *= this.coefFriction
             }
-            if (this.top > object.bottom && this.top - this.dy < object.bottom) {
-                this.top = object.bottom
+            if (this.top > object.bottom && this.top - this.dy <= object.bottom) {
+                this.top = object.bottom - 1
                 this.dy *= -this.coefResitution
                 this.dx *= this.coefFriction
             }
-            if (this.bottom < object.top && this.bottom - this.dy > object.top) {
-                this.bottom = object.top
+            if (this.bottom < object.top && this.bottom - this.dy >= object.top) {
+                this.bottom = object.top + 1
                 this.dy *= -this.coefResitution
                 this.dx *= this.coefFriction
             }
