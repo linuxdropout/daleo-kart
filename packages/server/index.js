@@ -31,14 +31,13 @@ app.post('/register-player', (req, res, next) => {
 })
 
 io.on('connection', socket => {
-    console.log('CONNECTIon')
-})
-
-io.on('scoreIncrease', scoreData => {
-    console.log(scoreData)
-    const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
-    playerToGivePoints.score += scoreData.points
-    io.emit('scoreIncrease', scoreData)
+    socket.on('scoreIncrease', scoreData => {
+        const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
+        if (playerToGivePoints) {
+            playerToGivePoints.score += scoreData.points
+            io.emit('scoreIncrease', scoreData)
+        }
+    })
 })
 
 http.listen(3000, function(){

@@ -57,10 +57,12 @@ const setUpSockets = () => {
     })
     socket.on('scoreIncrease', scoreData => {
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
-        playerToGivePoints.score += scoreData.points
-        const scoreElement = document.getElementsByClassName('player-score').find(el => {
-            el.innerHTML.indexOf(scoreData.playerName)
-        }).innerHTML = `${playerToGivePoints.playerName}: ${playerToGivePoints.score}`
+        if (playerToGivePoints) {
+            playerToGivePoints.score += scoreData.points
+            Array.from(document.getElementsByClassName('player-score')).find(el => {
+                return el.innerHTML.indexOf(scoreData.playerName) > -1
+            }).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
+        }
     })
 }
 
@@ -70,7 +72,7 @@ const setInitialHighScores = (players) => {
     const scoreBoard = document.getElementById('score-board')
     const scoreElements = players.map(player => {
         const newElement = document.createElement('div')
-        newElement.class = 'player-score'
+        newElement.className = 'player-score'
         var newContent = document.createTextNode(`${player.name}: ${player.score}`); 
         newElement.append(newContent)
 
@@ -183,11 +185,6 @@ function update() {
     for (const object of GLOBALS.GAME_OBJECTS) {
         object.update(GLOBALS.GAME_OBJECTS)
     }
-    console.log('INCREASE SCORE')
-    socket.emit('scoreIncrease', {
-        playerName: thisPlayer,
-        points: 1
-    })
 }
 
 function drawBackground(ctx) {
