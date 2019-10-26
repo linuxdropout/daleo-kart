@@ -1,18 +1,5 @@
-/*
 
-const base=`
-  <div id='daleokart' style='position:relative;top:0;left:0;width:100%;background-color:white;z-index:10000'>
-  </div>
-`
-const canvas = `
-<div id='dkCanvas' style='position:relative;top:0;left:0;height:200;width:100%;background-color:red;z-index:10000'>
-  <canvas id='canvas' style='background-color:white;float:left'></canvas>
-  <div id='dkBasket'style='float:left'>Basket (value = <span id='dkBasketTotal'></span>)
-    <ul id='dkBasketList'></ul>
-  </div>
-  <div style='clear:both'></div>
-</div>`*/
-
+DkTimer.Start(10, function(state){console.log(state)}, function(){console.log("All done")});
 DalesVoice.load();
 
 var welcomeText=`<p>Hey!! Dale here.</p>
