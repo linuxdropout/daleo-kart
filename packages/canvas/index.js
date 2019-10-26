@@ -25,17 +25,18 @@ function overlaps(obj1, obj2) {
     return false
 }
 
-const socket = io()
 const keysDown = {
     up: false,
     down: false,
     left: false,
-    right: false
+    right: false,
 }
 let allPlayers = []
 
 
 const setUpSockets = () => {
+    if (!io) return
+    const socket = io()
     socket.on('newPlayer', playerDetails => {
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
@@ -213,13 +214,17 @@ class Player extends GameObject {
     update(objectsInSpace) {
         this.ddx = keysDown.right ? 1 : (keysDown.left ? -1 : 0)
         this.ddy = keysDown.down ? 1 : (keysDown.up ? -1 : 0)
-        
+
         super.update(objectsInSpace)
+    }
+
+    draw(ctx) {
+        ctx.drawImage(GLOBALS.trolleyImage, this.x, this.y, this.w, this.h)
     }
 }
 
 function setScale(canvas, targetWidth = 1280, targetHeight = 720) {
-    const body = document.getElementsByTagName('body')[0]
+    const body = document.getElementById('body')
     const scaleX = body.clientWidth / targetWidth
     const scaleY = body.clientHeight / targetHeight
     const scale = Math.min(scaleX, scaleY)
@@ -242,14 +247,28 @@ function drawBackground(ctx) {
         left,
         right,
     } = GLOBALS.world
-    ctx.drawImage(GLOBALS.backgroundImage, left, bottom, right - left, top - bottom)
+    const ptrn = ctx.createPattern(GLOBALS.backgroundImage, 'repeat')
+    ctx.fillStyle = ptrn
+    ctx.fillRect(left, bottom, right - left, top - bottom)
 }
 
 function draw(c, ctx) {
+    const { top, right } = GLOBALS.world
+
     ctx.setTransform(1, 0, 0, 1, 0, 0)
     ctx.clearRect(0, 0, c.width, c.height)
-    const camX = -GLOBALS.player.x + c.width / 2
-    const camY = -GLOBALS.player.y + c.height / 2
+    let camX = -GLOBALS.player.x + c.width / 2
+    if (camX > right) {
+        camX = right
+    }
+    if (camX < 0) {
+        camX = 0
+    }
+    let camY = -GLOBALS.player.y + c.height / 2
+    if (camY > top) {
+        camY = top
+    }
+
     ctx.translate(camX, camY)
 
     drawBackground(ctx)
@@ -311,16 +330,17 @@ async function cacheImages(images) {
     return Promise.all(imagePromises)
 }
 
-async function main() {
+async function main(images) {
     const [
         backgroundImage,
-    ] = await cacheImages([
-        'face.jpg',
-    ])
+        shelvingImage,
+        trolleyImage,
+    ] = await cacheImages(images)
     GLOBALS.backgroundImage = backgroundImage
+    GLOBALS.shelvingImage = shelvingImage
+    GLOBALS.trolleyImage = trolleyImage
 
-    const c = document.createElement('canvas')
-    document.getElementsByTagName('body')[0].append(c)
+    const c = document.getElementById('canvas')
 
     setScale(c)
     window.addEventListener('resize', () => setScale(c))
@@ -335,11 +355,11 @@ async function main() {
         x < GLOBALS.world.right - 100;
         x += aisleWidth
     ) {
-        walls.push(
-            new Wall({
-                x, y: -900, w: 100, h: 1800,
-            }),
-        )
+        const wall = new Wall({
+            x, y: -900, w: 100, h: 1800,
+        })
+        wall.color = ctx.createPattern(GLOBALS.shelvingImage, 'repeat')
+        walls.push(wall)
     }
 
     GLOBALS.player = new Player({
@@ -362,26 +382,21 @@ const enterUsername = async name => {
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
-          'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         redirect: 'follow',
         referrer: 'no-referrer',
         body: JSON.stringify({
-            name
-        })
+            name,
+        }),
     })
     const res = await response.json()
     const registrationForm = document.getElementById('registration-form')
     registrationForm.parentElement.removeChild(registrationForm)
     setInitialHighScores(res.allPlayers)
     setUpSockets()
-    main()
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('form-submit').addEventListener('click', () => {
-        const name = document.getElementById('username-input').value
-
-        enterUsername(name)
-    })
-})
+function start(images) {
+    main(images)
+}

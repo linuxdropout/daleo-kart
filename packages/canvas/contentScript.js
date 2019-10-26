@@ -1,9 +1,9 @@
-var base=`
+const base=`
   <div id='daleokart' style='position:relative;top:0;left:0;width:100%;background-color:white;z-index:10000'>
   </div>
 `
 
-var canvas = `
+const canvas = `
 <div id='dkCanvas' style='position:relative;top:0;left:0;height:200;width:100%;background-color:red;z-index:10000'>
   <canvas id='canvas' style='background-color:white;float:left'></canvas>
   <div id='dkBasket'style='float:left'>Basket (value = <span id='dkBasketTotal'></span>)
@@ -12,14 +12,14 @@ var canvas = `
   <div style='clear:both'></div>
 </div>`
 
-var dwface = chrome.runtime.getURL("images/dale_winton_face.webp");
+const dwface = chrome.runtime.getURL("images/dale_winton_face.webp");
 const images = [
   chrome.runtime.getURL('images/small_tile.jpg'),
   chrome.runtime.getURL('images/shelving_smaller.png'),
   chrome.runtime.getURL('images/shopping-cart.png'),
 ]
 
-var loader = `
+const loader = `
 <style>
 .speech-bubble {
 	position: relative;

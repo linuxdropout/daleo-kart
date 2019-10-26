@@ -2,14 +2,28 @@
   "name": "Dale-io Kart",
   "version": "1.0",
   "description": "Go wild in the aisles!!! Supermarket sweep around Amazon with Dale Winton!",
-  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "permissions": [
+    "activeTab",
+    "declarativeContent",
+    "storage"
+  ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "background.js"
+    ],
     "persistent": false
-  },"content_scripts": [
+  },
+  "content_scripts": [
     {
-      "matches": ["https://*.amazon.co.uk/*/product/*"],
-      "js": ["scripts/jquery-3.4.1.min.js", "dkBasket.js", "index.js", "contentScript.js"]
+      "matches": [
+        "https://*.amazon.co.uk/*"
+      ],
+      "js": [
+        "scripts/jquery-3.4.1.min.js",
+        "dkBasket.js",
+        "index.js",
+        "contentScript.js"
+      ]
     }
   ],
   "icons": {
@@ -19,5 +33,13 @@
     "128": "images/dalewinton-128.png"
   },
   "manifest_version": 2,
-  "web_accessible_resources": ["images/dale_winton_face.webp", "images/dalewinton-128.png", "canvas/face.jpg"]
+  "web_accessible_resources": [
+    "images/dale_winton_face.webp",
+    "images/dalewinton-128.png",
+    "images/shelving_small.png",
+    "images/shelving_smaller.png",
+    "images/shelving.png",
+    "images/shopping-cart.png",
+    "images/small_tile.jpg"
+  ]
 }
