@@ -26,31 +26,8 @@ function overlaps(obj1, obj2) {
 }
 
 const socket = io()
-function bounce(mobileObject, staticObject) {
-    if (mobileObject.x < staticObject.left) {
-        mobileObject.x = staticObject.left
-        mobileObject.dx *= -mobileObject.coefResitution
-        mobileObject.dy *= mobileObject.coefFriction
-    }
-    if (mobileObject.right > staticObject.right) {
-        mobileObject.right = staticObject.right
-        mobileObject.dx *= -mobileObject.coefResitution
-        mobileObject.dy *= mobileObject.coefFriction
-    }
-    if (mobileObject.y < staticObject.bottom) {
-        mobileObject.y = staticObject.bottom
-        mobileObject.dy *= -mobileObject.coefResitution
-        mobileObject.dx *= mobileObject.coefFriction
-    }
-    if (mobileObject.top > staticObject.top) {
-        mobileObject.top = staticObject.top
-        mobileObject.dy *= -mobileObject.coefResitution
-        mobileObject.dx *= mobileObject.coefFriction
-    }
-}
 
 let allPlayers = []
-const thisPlayer = ''
 
 const setUpSockets = () => {
     socket.on('newPlayer', playerDetails => {
@@ -109,8 +86,16 @@ class GameObject {
         return this.x
     }
 
+    set left(value) {
+        this.x = value
+    }
+
     get bottom() {
         return this.y
+    }
+
+    set bottom(value) {
+        this.y = value
     }
 
     get top() {
@@ -145,7 +130,26 @@ class GameObject {
         if (Math.abs(this.dy) < 1) this.dy = 0
         if (Math.abs(this.dx) < 1) this.dx = 0
 
-        bounce(this, GLOBALS.world)
+        if (this.x < GLOBALS.world.left) {
+            this.x = GLOBALS.world.left
+            this.dx *= -this.coefResitution
+            this.dy *= this.coefFriction
+        }
+        if (this.right > GLOBALS.world.right) {
+            this.right = GLOBALS.world.right
+            this.dx *= -this.coefResitution
+            this.dy *= this.coefFriction
+        }
+        if (this.y < GLOBALS.world.bottom) {
+            this.y = GLOBALS.world.bottom
+            this.dy *= -this.coefResitution
+            this.dx *= this.coefFriction
+        }
+        if (this.top > GLOBALS.world.top) {
+            this.top = GLOBALS.world.top
+            this.dy *= -this.coefResitution
+            this.dx *= this.coefFriction
+        }
 
         for (const object of objectsInSpace) {
             if (overlaps(this, object)) {
@@ -166,7 +170,26 @@ class Wall extends GameObject { }
 class Player extends GameObject {
     collide(object) {
         if (object instanceof Wall) {
-            bounce(this, object)
+            if (this.right > object.left && this.right - this.dx < object.left) {
+                this.right = object.left
+                this.dx *= -this.coefResitution
+                this.dy *= this.coefFriction
+            }
+            if (this.left < object.right && this.left - this.dx > object.right) {
+                this.left = object.right
+                this.dx *= -this.coefResitution
+                this.dy *= this.coefFriction
+            }
+            if (this.top > object.bottom && this.top - this.dy < object.bottom) {
+                this.top = object.bottom
+                this.dy *= -this.coefResitution
+                this.dx *= this.coefFriction
+            }
+            if (this.bottom < object.top && this.bottom - this.dy > object.top) {
+                this.bottom = object.top
+                this.dy *= -this.coefResitution
+                this.dx *= this.coefFriction
+            }
         }
     }
 }
@@ -272,13 +295,13 @@ async function main() {
     const aisleWidth = 500
 
     for (
-        let x = GLOBALS.world.left + aisleWidth;
-        x < GLOBALS.world.right - aisleWidth;
+        let x = GLOBALS.world.left + 100;
+        x < GLOBALS.world.right - 100;
         x += aisleWidth
     ) {
         walls.push(
             new Wall({
-                x, y: 100, w: 100, h: (GLOBALS.world.top - aisleWidth * 2),
+                x, y: -900, w: 100, h: 1800,
             }),
         )
     }
