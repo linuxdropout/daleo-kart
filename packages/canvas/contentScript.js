@@ -13,19 +13,50 @@ var canvas = `
 </div>`
 
 var dwface = chrome.runtime.getURL("images/dale_winton_face.webp");
-alert(dwface)
-var canvasBgImage = chrome.runtime.getURL("canvas/face.jpg");
+const images = [
+  chrome.runtime.getURL('images/small_tile.jpg'),
+  chrome.runtime.getURL('images/shelving_smaller.png'),
+  chrome.runtime.getURL('images/shopping-cart.png'),
+]
 
 var loader = `
-<div id='dkLoader' style='position:relative;top:0;left:0;height:200;width:100%;background-color:white;z-index:10000'>
-  <div style="float:left">
+<style>
+.speech-bubble {
+	position: relative;
+	background: #000000;
+  border-radius: .4em;
+  color:white;
+  padding:5px;
+  padding-left:15px;
+  margin:10px;
+  margin-left:25px;
+}
+
+.speech-bubble:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 26px solid transparent;
+	border-right-color: #000000;
+	border-left: 0;
+	border-bottom: 0;
+	margin-top: -13px;
+	margin-left: -26px;
+}
+</style>
+<div id='dkLoader'>
+  <div id="dalesFace" style="float:left; display: none; margin:10px;">
     <img src = "` + dwface + `" style="height:100px;width:100px" style="float:left"/>
   </div>
-  <div style="float:left">
+  <div id="dalesVoice" class="speech-bubble" style="float:left;display: none;">
     <p>Hey!! Dale here.</p>
     <p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
     <p>Come with me and play.... Dale-io Kart!!!</p>
-    <button id="dkStartGame">Sure thing Dale... I'm in!</button>
+
+    <button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>
 
   </div>
   <div style='clear:both'></div>
@@ -35,15 +66,18 @@ var loader = `
 document.getElementsByTagName("BODY")[0].insertAdjacentHTML("afterbegin", base);
 
 showContent(loader);
+$("#dalesFace").slideDown( "slow",  function() {;
+  $("#dalesVoice").show( );
+});
 
 function showContent(content){
   document.getElementById("daleokart").innerHTML = content;
 }
 
-$("#dkStartGame").click(function() {
-  showContent(canvas);
-  main(canvasBgImage);
-});
+$('#dkStartGame').click(() => {
+  body.innerHTML = '<div id="body" style="position: fixed; width: 100%; height: 100%;"><canvas id="canvas"></canvas></div>'
+  start(images)
+})
 
 /*
 var list = document.getElementsByTagName("BODY")[0].insertAdjacentHTML("afterbegin", );
