@@ -294,19 +294,25 @@ async function main() {
 }
 
 // eslint-disable-next-line no-unused-vars
-const enterUsername = name => {
-    $.ajax({
-        url: '/register-player',
-        type: 'POST',
-        data: {
-            name,
+const enterUsername = async name => {
+    const response = await fetch('/register-player', {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
         },
-        success(res) {
-            const registrationForm = document.getElementById('registration-form')
-            registrationForm.parentElement.removeChild(registrationForm)
-            setInitialHighScores(res.allPlayers)
-            setUpSockets()
-            main()
-        },
+        redirect: 'follow',
+        referrer: 'no-referrer',
+        body: JSON.stringify({
+            name
+        })
     })
+    const res = await response.json()
+    const registrationForm = document.getElementById('registration-form')
+    registrationForm.parentElement.removeChild(registrationForm)
+    setInitialHighScores(res.allPlayers)
+    setUpSockets()
+    main()
 }
