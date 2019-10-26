@@ -10,6 +10,9 @@ module.exports = {
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
+    '$': 'writeable',
+    'io': 'writeable',
+    'chrome': 'writeable'
   },
   parserOptions: {
     ecmaFeatures: {
@@ -21,10 +24,6 @@ module.exports = {
   plugins: [
     'react',
   ],
-  globals: {
-    '$': 'writeable',
-    'io': 'writeable'
-  },
   rules: {
     'semi': ['error', 'never'],
     indent: [
