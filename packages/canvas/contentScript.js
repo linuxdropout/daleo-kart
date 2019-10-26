@@ -46,12 +46,6 @@ const loader = `
 	margin-top: -13px;
 	margin-left: -26px;
 }
-#score-board {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  color: white;
-}
 </style>
 <div id='dkLoader'>
   <div id="dalesFace" style="float:left; display: none; margin:10px;">
@@ -92,6 +86,16 @@ $('#dkStartGame').click(() => {
       </div>
       <div id='score-board'></div>
     </div>
+    <style>
+      #score-board {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+      }
+    </style>
   `
 
   document.getElementById('form-submit').addEventListener('click', () => {
