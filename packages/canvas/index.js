@@ -26,11 +26,34 @@ function overlaps(obj1, obj2) {
 }
 
 const socket = io()
+function bounce(mobileObject, staticObject) {
+    if (mobileObject.x < staticObject.left) {
+        mobileObject.x = staticObject.left
+        mobileObject.dx *= -mobileObject.coefResitution
+        mobileObject.dy *= mobileObject.coefFriction
+    }
+    if (mobileObject.right > staticObject.right) {
+        mobileObject.right = staticObject.right
+        mobileObject.dx *= -mobileObject.coefResitution
+        mobileObject.dy *= mobileObject.coefFriction
+    }
+    if (mobileObject.y < staticObject.bottom) {
+        mobileObject.y = staticObject.bottom
+        mobileObject.dy *= -mobileObject.coefResitution
+        mobileObject.dx *= mobileObject.coefFriction
+    }
+    if (mobileObject.top > staticObject.top) {
+        mobileObject.top = staticObject.top
+        mobileObject.dy *= -mobileObject.coefResitution
+        mobileObject.dx *= mobileObject.coefFriction
+    }
+}
+
 let allPlayers = []
-let thisPlayer = ''
+const thisPlayer = ''
 
 const setUpSockets = () => {
-    socket.on('newPlayer', function(playerDetails) {
+    socket.on('newPlayer', playerDetails => {
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
         const newElement = document.createElement('div')
@@ -41,9 +64,7 @@ const setUpSockets = () => {
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
             playerToGivePoints.score += scoreData.points
-            Array.from(document.getElementsByClassName('player-score')).find(el => {
-                return el.innerHTML.indexOf(scoreData.playerName) > -1
-            }).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
+            Array.from(document.getElementsByClassName('player-score')).find(el => el.innerHTML.indexOf(scoreData.playerName) > -1).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
         }
     })
 }
@@ -84,6 +105,14 @@ class GameObject {
         GLOBALS.GAME_OBJECTS.push(this)
     }
 
+    get left() {
+        return this.x
+    }
+
+    get bottom() {
+        return this.y
+    }
+
     get top() {
         return this.y + this.h
     }
@@ -116,26 +145,7 @@ class GameObject {
         if (Math.abs(this.dy) < 1) this.dy = 0
         if (Math.abs(this.dx) < 1) this.dx = 0
 
-        if (this.x < GLOBALS.world.left) {
-            this.x = GLOBALS.world.left
-            this.dx = this.dx * -this.coefResitution
-            this.dy *= this.coefFriction
-        }
-        if (this.right > GLOBALS.world.right) {
-            this.right = GLOBALS.world.right
-            this.dx = this.dx * -this.coefResitution
-            this.dy *= this.coefFriction
-        }
-        if (this.y < GLOBALS.world.bottom) {
-            this.y = GLOBALS.world.bottom
-            this.dy = this.dy * -this.coefResitution
-            this.dx *= this.coefFriction
-        }
-        if (this.top > GLOBALS.world.top) {
-            this.top = GLOBALS.world.top
-            this.dy = this.dy * -this.coefResitution
-            this.dx *= this.coefFriction
-        }
+        bounce(this, GLOBALS.world)
 
         for (const object of objectsInSpace) {
             if (overlaps(this, object)) {
@@ -148,6 +158,16 @@ class GameObject {
     draw(ctx) {
         ctx.fillStyle = this.color
         ctx.fillRect(this.x, this.y, this.w, this.h)
+    }
+}
+
+class Wall extends GameObject { }
+
+class Player extends GameObject {
+    collide(object) {
+        if (object instanceof Wall) {
+            bounce(this, object)
+        }
     }
 }
 
@@ -248,34 +268,27 @@ async function main() {
     document.addEventListener('resize', () => setScale(c))
     const ctx = c.getContext('2d')
 
-    GLOBALS.player = new GameObject({
+    const walls = []
+    const aisleWidth = 500
+
+    for (
+        let x = GLOBALS.world.left + aisleWidth;
+        x < GLOBALS.world.right - aisleWidth;
+        x += aisleWidth
+    ) {
+        walls.push(
+            new Wall({
+                x, y: 100, w: 100, h: (GLOBALS.world.top - aisleWidth * 2),
+            }),
+        )
+    }
+
+    GLOBALS.player = new Player({
         x: -25,
         y: 925,
         w: 50,
         h: 50,
     })
-    GLOBALS.player.collide = obj => {
-        obj.color = 'red'
-    }
-
-    const obstacles = [
-        new GameObject({
-            x: 100, y: 100, w: 100, h: 50,
-        }),
-        new GameObject({
-            x: 300, y: 300, w: 100, h: 50,
-        }),
-        new GameObject({
-            x: 500, y: 500, w: 100, h: 50,
-        }),
-        new GameObject({
-            x: -450, y: -450, w: 100, h: 50,
-        }),
-        new GameObject({
-            x: 700, y: 700, w: 100, h: 50,
-        }),
-    ]
-    console.log(obstacles)
 
     setupKeyBindings(GLOBALS.player)
 
@@ -283,7 +296,7 @@ async function main() {
 }
 
 // eslint-disable-next-line no-unused-vars
-const enterUsername = name => {
+function enterUsername(name) {
     $.ajax({
         url: '/register-player',
         type: 'POST',
@@ -299,3 +312,11 @@ const enterUsername = name => {
         },
     })
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('form-submit').addEventListener('click', () => {
+        const name = document.getElementById('username-input').value
+
+        enterUsername(name)
+    })
+})
