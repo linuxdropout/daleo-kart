@@ -1,0 +1,32 @@
+{
+  "name": "Daleo-Kart",
+  "version": "1.0",
+  "description": "Supermarket sweep around Amazon with Dale Winton!",
+  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "options_page": "options.html",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },"content_scripts": [
+    {
+      "matches": ["https://*.amazon.co.uk/*/product/*"],
+      "js": ["jquery-3.4.1.min.js", "contentScript.js"]
+    }
+  ],
+  "page_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/dalewinton-16.png",
+      "32": "images/dalewinton-32.png",
+      "48": "images/dalewinton-48.png",
+      "128": "images/dalewinton-128.png"
+    }
+  },
+  "icons": {
+    "16": "images/dalewinton-16.png",
+    "32": "images/dalewinton-32.png",
+    "48": "images/dalewinton-48.png",
+    "128": "images/dalewinton-128.png"
+  },
+  "manifest_version": 2
+}
