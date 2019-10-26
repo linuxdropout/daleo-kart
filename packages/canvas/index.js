@@ -29,24 +29,6 @@ const socket = io()
 let allPlayers = []
 let thisPlayer = ''
 
-const enterUsername = name => {
-    $.ajax({
-        url: '/register-player',
-        type: 'POST',
-        data: {
-            name
-        },
-        success: function(res) {
-            const registrationForm = document.getElementById('registration-form')
-            registrationForm.parentElement.removeChild(registrationForm)
-            thisPlayer = name
-            setInitialHighScores(res.allPlayers)
-            setUpSockets()
-            main()
-        }
-    })
-}
-
 const setUpSockets = () => {
     socket.on('newPlayer', function(playerDetails) {
         allPlayers.push(playerDetails)
