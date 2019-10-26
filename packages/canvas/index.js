@@ -71,7 +71,8 @@ class GameObject {
         this.w = w
         this.h = h
         this.coefResitution = 0.6
-        this.coefFriction = 0.95
+        this.collisionCoefFriction = 0.95
+        this.coefFriction = 0.98
         this.color = 'white'
 
         this.dx = 0
@@ -120,12 +121,22 @@ class GameObject {
     }
 
     update(objectsInSpace) {
-        this.dx += this.ddx
-        this.x += this.dx
-        this.ddx = 0
-        this.dy += this.ddy
-        this.y += this.dy
-        this.ddy = 0
+        if (this.ddx !== 0) {
+            this.dx += this.ddx
+            this.x += this.dx
+            this.ddx = 0
+        } else {
+            this.x += this.dx
+            this.dx *= this.coefFriction
+        }
+        if (this.ddy !== 0) {
+            this.dy += this.ddy
+            this.y += this.dy
+            this.ddy = 0
+        } else {
+            this.y += this.dy
+            this.dy *= this.coefFriction
+        }
 
         if (Math.abs(this.dy) < 1) this.dy = 0
         if (Math.abs(this.dx) < 1) this.dx = 0
