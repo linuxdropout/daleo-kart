@@ -13,6 +13,7 @@ var canvas = `
 </div>`
 
 var dwface = chrome.runtime.getURL("images/dale_winton_face.webp");
+var canvasBgImage = chrome.runtime.getURL("canvas/face.jpg");
 
 var loader = `
 <div id='dkLoader' style='position:relative;top:0;left:0;height:200;width:100%;background-color:white;z-index:10000'>
@@ -40,6 +41,7 @@ function showContent(content){
 
 $("#dkStartGame").click(function() {
   showContent(canvas);
+  main(canvasBgImage);
 });
 
 /*
