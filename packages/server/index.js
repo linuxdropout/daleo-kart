@@ -2,10 +2,12 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 const http = require('http').createServer(app)
+const cors = require('cors')
 const io = require('socket.io')(http)
 
 const allPlayers = []
 
+app.use(cors())
 app.use(bodyParser())
 app.use(express.static('www'))
 
