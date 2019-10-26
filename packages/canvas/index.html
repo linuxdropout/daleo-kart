@@ -17,13 +17,13 @@
     </style>
     <link href='index.css' rel="stylesheet" type="text/css">
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/index.js"></script>
+    <script src="index.js"></script>
 </head>
 
 <body>
     <div id='registration-form'>
         <input type='text' name='name' id='username-input'>
-        <button onclick="enterUsername(document.getElementById('username-input').value)">Start</button>
+        <button id='form-submit'>Start</button>
     </div>
     <div id='score-board'></div>
 </body>

@@ -26,11 +26,11 @@ function overlaps(obj1, obj2) {
 }
 
 const socket = io()
+
 let allPlayers = []
-let thisPlayer = ''
 
 const setUpSockets = () => {
-    socket.on('newPlayer', function(playerDetails) {
+    socket.on('newPlayer', playerDetails => {
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
         const newElement = document.createElement('div')
@@ -41,9 +41,7 @@ const setUpSockets = () => {
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
             playerToGivePoints.score += scoreData.points
-            Array.from(document.getElementsByClassName('player-score')).find(el => {
-                return el.innerHTML.indexOf(scoreData.playerName) > -1
-            }).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
+            Array.from(document.getElementsByClassName('player-score')).find(el => el.innerHTML.indexOf(scoreData.playerName) > -1).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
         }
     })
 }
@@ -83,6 +81,22 @@ class GameObject {
         this.ddy = 0
 
         GLOBALS.GAME_OBJECTS.push(this)
+    }
+
+    get left() {
+        return this.x
+    }
+
+    set left(value) {
+        this.x = value
+    }
+
+    get bottom() {
+        return this.y
+    }
+
+    set bottom(value) {
+        this.y = value
     }
 
     get top() {
@@ -129,23 +143,23 @@ class GameObject {
 
         if (this.x < GLOBALS.world.left) {
             this.x = GLOBALS.world.left
-            this.dx = this.dx * -this.coefResitution
-            this.dy *= this.collisionCoefFriction
+            this.dx *= -this.coefResitution
+            this.dy *= this.coefFriction
         }
         if (this.right > GLOBALS.world.right) {
             this.right = GLOBALS.world.right
-            this.dx = this.dx * -this.coefResitution
-            this.dy *= this.collisionCoefFriction
+            this.dx *= -this.coefResitution
+            this.dy *= this.coefFriction
         }
         if (this.y < GLOBALS.world.bottom) {
             this.y = GLOBALS.world.bottom
-            this.dy = this.dy * -this.coefResitution
-            this.dx *= this.collisionCoefFriction
+            this.dy *= -this.coefResitution
+            this.dx *= this.coefFriction
         }
         if (this.top > GLOBALS.world.top) {
             this.top = GLOBALS.world.top
-            this.dy = this.dy * -this.coefResitution
-            this.dx *= this.collisionCoefFriction
+            this.dy *= -this.coefResitution
+            this.dx *= this.coefFriction
         }
 
         for (const object of objectsInSpace) {
@@ -159,6 +173,35 @@ class GameObject {
     draw(ctx) {
         ctx.fillStyle = this.color
         ctx.fillRect(this.x, this.y, this.w, this.h)
+    }
+}
+
+class Wall extends GameObject { }
+
+class Player extends GameObject {
+    collide(object) {
+        if (object instanceof Wall) {
+            if (this.right > object.left && this.right - this.dx < object.left) {
+                this.right = object.left
+                this.dx *= -this.coefResitution
+                this.dy *= this.coefFriction
+            }
+            if (this.left < object.right && this.left - this.dx > object.right) {
+                this.left = object.right
+                this.dx *= -this.coefResitution
+                this.dy *= this.coefFriction
+            }
+            if (this.top > object.bottom && this.top - this.dy < object.bottom) {
+                this.top = object.bottom
+                this.dy *= -this.coefResitution
+                this.dx *= this.coefFriction
+            }
+            if (this.bottom < object.top && this.bottom - this.dy > object.top) {
+                this.bottom = object.top
+                this.dy *= -this.coefResitution
+                this.dx *= this.coefFriction
+            }
+        }
     }
 }
 
@@ -259,34 +302,27 @@ async function main() {
     document.addEventListener('resize', () => setScale(c))
     const ctx = c.getContext('2d')
 
-    GLOBALS.player = new GameObject({
+    const walls = []
+    const aisleWidth = 500
+
+    for (
+        let x = GLOBALS.world.left + 100;
+        x < GLOBALS.world.right - 100;
+        x += aisleWidth
+    ) {
+        walls.push(
+            new Wall({
+                x, y: -900, w: 100, h: 1800,
+            }),
+        )
+    }
+
+    GLOBALS.player = new Player({
         x: -25,
         y: 925,
         w: 50,
         h: 50,
     })
-    GLOBALS.player.collide = obj => {
-        obj.color = 'red'
-    }
-
-    const obstacles = [
-        new GameObject({
-            x: 100, y: 100, w: 100, h: 50,
-        }),
-        new GameObject({
-            x: 300, y: 300, w: 100, h: 50,
-        }),
-        new GameObject({
-            x: 500, y: 500, w: 100, h: 50,
-        }),
-        new GameObject({
-            x: -450, y: -450, w: 100, h: 50,
-        }),
-        new GameObject({
-            x: 700, y: 700, w: 100, h: 50,
-        }),
-    ]
-    console.log(obstacles)
 
     setupKeyBindings(GLOBALS.player)
 
@@ -316,3 +352,11 @@ const enterUsername = async name => {
     setUpSockets()
     main()
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('form-submit').addEventListener('click', () => {
+        const name = document.getElementById('username-input').value
+
+        enterUsername(name)
+    })
+})
