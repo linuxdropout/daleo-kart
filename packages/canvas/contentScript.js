@@ -63,7 +63,9 @@ const loader = `
 </div>`
 
 
-document.getElementsByTagName("BODY")[0].insertAdjacentHTML("afterbegin", base);
+const body = document.getElementsByTagName('BODY')[0]
+body.insertAdjacentHTML('afterbegin', base)
+
 
 showContent(loader);
 $("#dalesFace").slideDown( "slow",  function() {;
@@ -75,6 +77,7 @@ function showContent(content){
 }
 
 $('#dkStartGame').click(() => {
+  
   body.innerHTML = '<div id="body" style="position: fixed; width: 100%; height: 100%;"><canvas id="canvas"></canvas></div>'
   start(images)
 })
