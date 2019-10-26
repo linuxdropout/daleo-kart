@@ -253,10 +253,22 @@ function drawBackground(ctx) {
 }
 
 function draw(c, ctx) {
+    const { top, right } = GLOBALS.world
+
     ctx.setTransform(1, 0, 0, 1, 0, 0)
     ctx.clearRect(0, 0, c.width, c.height)
-    const camX = -GLOBALS.player.x + c.width / 2
-    const camY = -GLOBALS.player.y + c.height / 2
+    let camX = -GLOBALS.player.x + c.width / 2
+    if (camX > right) {
+        camX = right
+    }
+    if (camX < 0) {
+        camX = 0
+    }
+    let camY = -GLOBALS.player.y + c.height / 2
+    if (camY > top) {
+        camY = top
+    }
+
     ctx.translate(camX, camY)
 
     drawBackground(ctx)
