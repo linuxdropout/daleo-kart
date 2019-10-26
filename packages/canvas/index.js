@@ -229,6 +229,7 @@ async function main() {
             x: 700, y: 700, w: 100, h: 50,
         }),
     ]
+    console.log(obstacles)
 
     setupKeyBindings(GLOBALS.player)
 
