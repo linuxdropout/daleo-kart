@@ -4,6 +4,53 @@ const GLOBALS = {
     GAME_OBJECTS: [],
 }
 
+let allPlayers = []
+
+const enterUsername = name => {
+    $.ajax({
+        url: '/register-player',
+        type: 'POST',
+        data: {
+            name
+        },
+        success: function(res) {
+            const registrationForm = document.getElementById('registration-form')
+            registrationForm.parentElement.removeChild(registrationForm)
+            setInitialHighScores(res.allPlayers)
+            setUpSockets()
+            main()
+        }
+    })
+}
+
+const setUpSockets = () => {
+    const socket = io()
+    socket.on('newPlayer', function(playerDetails) {
+        allPlayers.push(playerDetails)
+        const scoreBoard = document.getElementById('score-board')
+        const newElement = document.createElement('div')
+        var newContent = document.createTextNode(`${playerDetails.name}: ${playerDetails.score}`); 
+        newElement.append(newContent)
+        scoreBoard.append(newElement)
+    })
+}
+
+const setInitialHighScores = (players) => {
+    allPlayers = players
+
+    const scoreBoard = document.getElementById('score-board')
+    const scoreElements = players.map(player => {
+        const newElement = document.createElement('div')
+        var newContent = document.createTextNode(`${player.name}: ${player.score}`); 
+        newElement.append(newContent)
+
+        return newElement
+    })
+    for (const element of scoreElements) {
+        scoreBoard.append(element)
+    }
+}
+
 class GameObject {
     constructor({
         x, y, w, h,
@@ -95,7 +142,8 @@ function setupKeyBindings(player) {
 }
 
 function main() {
-    const c = document.getElementById('canvas')
+    const c = document.createElement('canvas')
+    document.getElementsByTagName('body')[0].append(c)
     setScale(c)
     window.addEventListener('resize', () => setScale(c))
     document.addEventListener('resize', () => setScale(c))
@@ -112,5 +160,3 @@ function main() {
 
     loop(c, ctx, GLOBALS.msPerUpdate)
 }
-
-document.addEventListener('DOMContentLoaded', main)
