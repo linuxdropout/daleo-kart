@@ -46,6 +46,12 @@ const loader = `
 	margin-top: -13px;
 	margin-left: -26px;
 }
+#score-board {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+}
 </style>
 <div id='dkLoader'>
   <div id="dalesFace" style="float:left; display: none; margin:10px;">
@@ -78,9 +84,24 @@ function showContent(content){
 
 $('#dkStartGame').click(() => {
   
-  body.innerHTML = '<div id="body" style="position: fixed; width: 100%; height: 100%;"><canvas id="canvas"></canvas></div>'
+  body.innerHTML = `
+    <div id='body' style="position: fixed; width: 100%; height: 100%;">
+      <div id='registration-form'>
+        <input type='text' name='name' id='username-input'>
+        <button id='form-submit'>Start</button>
+      </div>
+      <div id='score-board'></div>
+    </div>
+  `
+
+  document.getElementById('form-submit').addEventListener('click', () => {
+    const name = document.getElementById('username-input').value
+    enterUsername(name)
+  })
+
   start(images)
 })
+
 
 /*
 var list = document.getElementsByTagName("BODY")[0].insertAdjacentHTML("afterbegin", );
