@@ -25,8 +25,12 @@ module.exports = {
     'semi': ['error', 'never'],
     indent: [
       'error',
-      4
+      4,
+      {
+        SwitchCase: 1
+      }
     ],
+    'default-case': 0,
     'arrow-parens': ['error', 'as-needed'],
     'max-statements-per-line': ['error', { max: 1 }],
     'max-classes-per-file': 0,
