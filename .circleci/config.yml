@@ -4,8 +4,13 @@ jobs:
     docker:
       - image: circleci/node:13.0.1
     steps:
+      - add_ssh_keys:
+        fingerprints:
+          - "c8:f7:ab:35:ff:2b:1d:75:f2:6b:09:ce:c7:7b:01:09"
+      - run: ls -lahR
       - checkout
       - run: npm i
       - run: npx lerna bootstrap
       - run: npm run lint
       - run: npm run test
+      - run: ssh ec2-user@3.132.213.167 -i ~/.ssh/aliptahq.pem 'sudo nohup sh /home/ec2-user/daleo-kart/update.sh'
