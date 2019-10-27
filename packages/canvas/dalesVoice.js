@@ -13,6 +13,7 @@ const DalesVoice = {
                 padding-left:15px;
                 margin:10px;
                 margin-left:25px;
+                vertical-align:middle;
                 }
             
                 .speech-bubble:after {
@@ -45,6 +46,10 @@ const DalesVoice = {
                 </div>`;
         const body = document.getElementsByTagName('BODY')[0]
         body.insertAdjacentHTML('afterbegin', speechBubble)
+    },
+    simpleSpeak(words){
+        words = "<p style='min-width:200px; min-height:65px; font-size:16pt; vertical-align:middle;'>" + words + "</p>"
+        this.speak(words);
     },
     speak(words){
         $("#dalesFace").slideDown( "slow",  function() {;
