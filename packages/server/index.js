@@ -50,7 +50,6 @@ app.post('/register-player', (req, res) => {
 
 io.on('connection', socket => {
     socket.on('getItem', scoreData => {
-        console.log('SCORE DATA ', scoreData)
         const allPlayers = gameLobbies[scoreData.lobbyName]
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
