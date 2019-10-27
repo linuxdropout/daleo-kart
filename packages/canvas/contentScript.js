@@ -106,6 +106,66 @@ function setBodyContent(html) {
     bodyElement.innerHTML = html
 }
 
+const onClick = (id, cb) => document.getElementById(id).addEventListener('click', cb)
+const val = id => document.getElementById(id)
+
+const registrationForm = onSubmit => {
+    setBodyContent(/* html */`
+        <div id='registration-form'>
+            Name: <input type='text' name='name' id='registration-form-input'><br>
+            <button id='registration-form-submit'>Submit</button>
+        </div>
+    `)
+    onClick('registration-form-submit', () => onSubmit(val('registration-form-submit')))
+}
+
+const lobbyChoose = (lobbies, onCreate, onJoin) => {
+    setBodyContent(/* html */`
+        <table>
+            ${lobbies.map(lobby => /* html */`
+                <tr>
+                    <td>${lobby.name}</td>
+                    <td>${lobby.players.length}</td>
+                    <td><button id='${lobby.name}'>Join Lobby</button></td>
+                </tr>
+            `)}
+        </table>
+        <div>
+            <input type='text' id='lobby'>
+            <button id='create-lobby'>Create Lobby</button>
+        </div>
+    `)
+    onClick('create-lobby', () => onCreate(val('lobby')))
+    for (const lobby of lobbies) {
+        onClick(lobby.name, () => onJoin(lobby.name))
+    }
+}
+
+const lobbyInfo = (player, lobby, onReady, onStart) => {
+    const playersReady = !lobby.players.find(lobbyPlayer => !lobbyPlayer.ready)
+
+    setBodyContent(/* html */`
+        <h3>${player.name}</h3>
+        <span>High Score: <b>${player.highScore}</b></span><br>
+        <button id='ready'>Ready!</button>
+        <hr>
+
+        <h3>Lobby - ${lobby.name}</h3>
+        <table>
+            ${lobby.players.map(lobbyPlayer => /* html */`
+                <tr>
+                    <td>${lobbyPlayer.name}</td>
+                    <td>${lobbyPlayer.ready ? 'ready!' : 'waiting...'}</td>
+                </tr>
+            `)}
+        </table>
+        ${playersReady ? '<button id="start">Start Game!</button>' : '<div>Please wait for everyone to be ready...</div>'}
+    `)
+
+    if (playersReady) onClick('start', onStart)
+    onClick('ready', onReady)
+}
+
 async function makeApiCall(path, method = 'GET', postBody) {
     const request = {
         method,
@@ -167,30 +227,62 @@ setTimeout(async () => {
         left.innerHTML += /* html */`
             <div id='body' style="width: 100%; height: 100%;"></div>
         `
-        setBodyContent(/* html */`
-            <div id='registration-form'>
-                Lobby: <input type='text' name='lobby' id='lobby-input'><br>
-                Name: <input type='text' name='name' id='username-input'><br>
-                <button id='form-submit'>Start</button>
-            </div>
-        `)
 
         DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name, my lovely.</p>")
+        const playerName = await new Promise(registrationForm)
+        const [lobbies, player] = await Promise.all([
+            makeApiCall('/lobbies'),
+            makeApiCall('/register-player', 'POST', { playerName }),
+            preLoad(),
+        ])
 
-        document.getElementById('username-input').value = ''
+        DalesVoice.speak(`<p>Lovely to meet you ${playerName}, now lets get you into a lobby!</p>`)
 
-        document.getElementById('form-submit').addEventListener('click', () => {
-            const uname = document.getElementById('username-input').value
-            const lname = document.getElementById('lobby-input').value
+        const onJoinLobby = async lobbyName => {
+            const lobby = await makeApiCall('/join-lobby', 'POST', { lobbyName, playerName })
+            const socket = setUpSockets(lobby.name)
 
-            if (uname && lname) {
-                actuallyStartTheGame(
-                    uname,
-                    lname,
+            const refreshLobby = newlobby => {
+                lobbyInfo(
+                    player,
+                    newlobby,
+                    () => {
+                        player.ready = !player.ready
+                        socket.emit('playerReady', player)
+                        setBodyContent('')
+                    },
+                    () => {
+                        setBodyContent('')
+                        actuallyStartTheGame(player.name, newlobby)
+                    },
                 )
             }
-        })
 
-        preLoad()
+            socket.on('lobbyUpdate', refreshLobby)
+            refreshLobby(lobby)
+        }
+
+        const onCreateLobby = async lobbyName => {
+            await makeApiCall('/create-lobby', 'POST', { lobbyName })
+            lobbyChoose(lobbies, onCreateLobby, onJoinLobby)
+        }
+
+        lobbyChoose(lobbies, onCreateLobby, onJoinLobby)
+
+        // document.getElementById('username-input').value = ''
+
+        // document.getElementById('form-submit').addEventListener('click', () => {
+        //     const uname = document.getElementById('username-input').value
+        //     const lname = document.getElementById('lobby-input').value
+
+        //     if (uname && lname) {
+        //         actuallyStartTheGame(
+        //             uname,
+        //             lname,
+        //         )
+        //     }
+        // })
+
+        // preLoad()
     })
 }, 1000)

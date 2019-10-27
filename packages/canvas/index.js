@@ -44,9 +44,9 @@ const setUpSockets = lobby => {
     socket.on('newPlayer', playerDetails => {
         if (playerDetails.lobby !== lobby) return
         allPlayers.push(playerDetails)
-        const scoreBoardLobby = document.getElementById('score-board-lobby');
+        const scoreBoardLobby = document.getElementById('score-board-lobby')
         scoreBoardLobby.innerHTML = `Lobby: ${playerDetails.lobby}`
-        DkGameControl.ShowScoreboard();
+        DkGameControl.ShowScoreboard()
     })
     socket.on('setItem', scoreData => {
         console.log(scoreData)
@@ -56,8 +56,8 @@ const setUpSockets = lobby => {
         if (playerToGivePoints) {
             playerToGivePoints.basket.push(scoreData.item)
             playerToGivePoints.score += scoreData.item.price
-            DkGameControl.ShowScoreboard();
-            //Array.from(document.getElementsByClassName('player-score')).find(el => el.innerHTML.indexOf(scoreData.playerName) > -1).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
+            DkGameControl.ShowScoreboard()
+            // Array.from(document.getElementsByClassName('player-score')).find(el => el.innerHTML.indexOf(scoreData.playerName) > -1).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
         }
         if (GLOBALS.player.username === scoreData.playerName) {
             const basketElement = document.getElementById('basket')
@@ -72,11 +72,13 @@ const setUpSockets = lobby => {
             basketElement.append(newItem)
         }
     })
+
+    return socket
 }
 
 const setInitialHighScores = players => {
     allPlayers = players
-    DkGameControl.ShowScoreboard();
+    DkGameControl.ShowScoreboard()
 }
 
 const setInitialBasket = () => {
@@ -85,8 +87,7 @@ const setInitialBasket = () => {
     basketTitle.innerHTML = 'Your Basket:'
     basketElement.append(basketTitle)
 
-    $("#basket").show();
-
+    $('#basket').show()
 }
 
 class GameObject {
@@ -486,31 +487,7 @@ async function main(name, initialPlayers) {
 
 // eslint-disable-next-line no-unused-vars
 const enterUsername = async (name, lobby) => {
-    const response = await fetch('https://aliptahq.com/register-player', {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer',
-        body: JSON.stringify({
-            name,
-            lobby,
-        }),
-    })
-    const res = await response.json()
-    if (res.success) {
-        const registrationForm = document.getElementById('registration-form')
-        registrationForm.parentElement.removeChild(registrationForm)
-
-        setUpSockets(lobby)
-        main(name, res.allPlayers)
-    } else {
-        console.log(res)
-    }
+    main(name, lobby.players)
 }
 
 // eslint-disable-next-line no-unused-vars

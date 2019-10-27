@@ -18,7 +18,8 @@ module.exports = {
     'DkGameControl': 'writeable',
     'DkTimer': 'writeable',
     'allPlayers': 'writeable',
-    'enterUsername': 'writeable'
+    'enterUsername': 'writeable',
+    'setUpSockets': 'writeable'
   },
   parserOptions: {
     ecmaFeatures: {
