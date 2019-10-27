@@ -113,8 +113,8 @@ setTimeout(async () => {
             <div id='basket'></div>
             <div id='score-board'><h1>Scores</h1><h3 id="score-board-lobby">Lobby : </h3><table id='score-board-table'></table></div>
         `
-        $("#basket").hide();
-        $("#score-board").hide();
+        $('#basket').hide()
+        $('#score-board').hide()
 
         left.innerHTML += /* html */`
             <div id='body' style="width: 100%; height: 100%;">
@@ -161,4 +161,4 @@ setTimeout(async () => {
 
         start(images, itemData)
     })
-}, 1000)
+}, 3000)

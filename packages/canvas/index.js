@@ -2,6 +2,7 @@ const GLOBALS = {
     NUMBER_OF_AMAZON_ITEMS: 10,
     scale: 0,
     msPerUpdate: 1000 / 30,
+    msPerRemoteUpdate: 1000 / 30,
     GAME_OBJECTS: [],
     itemData: [],
     amazonItems: [],
@@ -40,24 +41,68 @@ let allPlayers = []
 
 const setUpSockets = lobby => {
     if (!io) return
-    socket = io('https://aliptahq.com')
+    socket = io('https://aliptahq.com/')
     socket.on('newPlayer', playerDetails => {
         if (playerDetails.lobby !== lobby) return
         allPlayers.push(playerDetails)
-        const scoreBoardLobby = document.getElementById('score-board-lobby');
+        const scoreBoardLobby = document.getElementById('score-board-lobby')
         scoreBoardLobby.innerHTML = `Lobby: ${playerDetails.lobby}`
-        DkGameControl.ShowScoreboard();
+        DkGameControl.ShowScoreboard()
+
+        const {
+            x, y, w, h, username, dx, dy,
+        } = GLOBALS.player
+        socket.emit('updatePosition', {
+            lobbyName: lobby,
+            name: username,
+            x,
+            y,
+            w,
+            h,
+            dx,
+            dy,
+        })
+    })
+    socket.on('requestPositions', () => {
+        const {
+            x, y, w, h, username, dx, dy,
+        } = GLOBALS.player
+        socket.emit('updatePosition', {
+            lobbyName: lobby,
+            name: username,
+            x,
+            y,
+            w,
+            h,
+            dx,
+            dy,
+        })
+    })
+    socket.on('updatePosition', data => {
+        console.log('DATA ', data)
+        const playerToUpdate = allPlayers.find(player => player.name === data.name)
+        playerToUpdate.position = {
+            x: data.x,
+            y: data.y,
+            h: data.h,
+            w: data.w,
+        }
+        const playerObjectToUpdate = GLOBALS.GAME_OBJECTS.find(obj => (obj instanceof GhostPlayer) && obj.username === data.name)
+        if (playerObjectToUpdate) {
+            playerObjectToUpdate.x = data.x
+            playerObjectToUpdate.y = data.y
+        } else {
+            console.error('NO PLAYER TO UPDATE')
+        }
     })
     socket.on('setItem', scoreData => {
-        console.log(scoreData)
-        console.log(lobby)
         if (scoreData.lobbyName !== lobby) return
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
             playerToGivePoints.basket.push(scoreData.item)
             playerToGivePoints.score += scoreData.item.price
-            DkGameControl.ShowScoreboard();
-            //Array.from(document.getElementsByClassName('player-score')).find(el => el.innerHTML.indexOf(scoreData.playerName) > -1).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
+            DkGameControl.ShowScoreboard()
+            // Array.from(document.getElementsByClassName('player-score')).find(el => el.innerHTML.indexOf(scoreData.playerName) > -1).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
         }
         if (GLOBALS.player.username === scoreData.playerName) {
             const basketElement = document.getElementById('basket')
@@ -72,11 +117,42 @@ const setUpSockets = lobby => {
             basketElement.append(newItem)
         }
     })
+    setInterval(() => {
+        const {
+            x, y, w, h, username, dx, dy,
+        } = GLOBALS.player
+        socket.emit('updatePosition', {
+            lobbyName: lobby,
+            name: username,
+            x,
+            y,
+            w,
+            h,
+            dx,
+            dy,
+        })
+    }, GLOBALS.msPerRemoteUpdate)
+    socket.emit('requestPositions')
 }
 
 const setInitialHighScores = players => {
     allPlayers = players
-    DkGameControl.ShowScoreboard();
+    DkGameControl.ShowScoreboard()
+    console.log(allPlayers)
+    for (const player of players) {
+        console.log('PLAYERS', players)
+        console.log('PLAYER', player)
+        console.log('POSITION', player.position)
+        new GhostPlayer({
+            dx: player.position.dx,
+            dy: player.position.dy,
+            x: player.position.x,
+            y: player.position.y,
+            w: player.position.w,
+            h: player.position.h,
+            username: player.name,
+        })
+    }
 }
 
 const setInitialBasket = () => {
@@ -85,8 +161,7 @@ const setInitialBasket = () => {
     basketTitle.innerHTML = 'Your Basket:'
     basketElement.append(basketTitle)
 
-    $("#basket").show();
-
+    $('#basket').show()
 }
 
 class GameObject {
@@ -328,6 +403,29 @@ class Player extends GameObject {
     }
 }
 
+class GhostPlayer extends GameObject {
+    constructor(opts) {
+        super(opts)
+        this.username = opts.username
+        this.keysDown = {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+        }
+    }
+
+    update(objectsInSpace) {
+        this.ddx = this.keysDown.right ? 1 : (this.keysDown.left ? -1 : 0)
+        this.ddy = this.keysDown.down ? 1 : (this.keysDown.up ? -1 : 0)
+
+        super.update(objectsInSpace)
+    }
+}
+
+GhostPlayer.prototype.collide = Player.prototype.collide
+GhostPlayer.prototype.draw = Player.prototype.draw
+
 function setScale(canvas, targetWidth = 1280, targetHeight = 720) {
     const body = document.getElementById('body')
     const scaleX = body.clientWidth / targetWidth
@@ -440,6 +538,14 @@ async function cacheImages(images) {
 }
 
 async function main(name, initialPlayers) {
+    GLOBALS.player = new Player({
+        username: name,
+        x: -25,
+        y: 925,
+        w: 50,
+        h: 50,
+    })
+    console.log('INITIAL PLAYERS: ', initialPlayers)
     const c = document.createElement('canvas')
     const body = document.getElementById('body')
     body.append(c)
@@ -467,13 +573,6 @@ async function main(name, initialPlayers) {
         walls.push(wall)
     }
 
-    GLOBALS.player = new Player({
-        username: name,
-        x: -25,
-        y: 925,
-        w: 50,
-        h: 50,
-    })
 
     for (let i = 0; i < GLOBALS.NUMBER_OF_AMAZON_ITEMS; i++) {
         AmazonItem.generate()
@@ -506,6 +605,7 @@ const enterUsername = async (name, lobby) => {
         const registrationForm = document.getElementById('registration-form')
         registrationForm.parentElement.removeChild(registrationForm)
 
+        console.log(res.allPlayers)
         setUpSockets(lobby)
         main(name, res.allPlayers)
     } else {

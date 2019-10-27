@@ -33,14 +33,25 @@ app.post('/register-player', (req, res) => {
 
     const allPlayers = gameLobbies[lobbyName].players
 
+    console.log(allPlayers)
+
     if (allPlayers && allPlayers.filter(player => player.name === playerName).length === 0) {
         const playerData = {
             lobby: lobbyName,
             name: playerName,
             score: 0,
             basket: [],
+            position: {
+                dx: 0,
+                dy: 0,
+                x: -25,
+                y: 925,
+                w: 50,
+                h: 50,
+            },
         }
         allPlayers.push(playerData)
+        console.log(allPlayers)
         io.sockets.emit('newPlayer', playerData)
         return res.json({
             success: true,
@@ -62,6 +73,28 @@ io.on('connection', socket => {
             playerToGivePoints.basket.push(scoreData.item)
             playerToGivePoints.score += scoreData.item.price
             io.emit('setItem', scoreData)
+        }
+    })
+
+    socket.on('requestPositions', () => {
+        socket.broadcast.emit('requestPositions')
+    })
+
+    socket.on('updatePosition', data => {
+        const allPlayers = gameLobbies[data.lobbyName].players
+        console.log(allPlayers)
+        console.log(data)
+        const playerToUpdate = allPlayers.find(player => player.name === data.name)
+        if (playerToUpdate) {
+            playerToUpdate.position = {
+                x: data.x,
+                y: data.y,
+                h: data.h,
+                w: data.w,
+            }
+            socket.broadcast.emit('updatePosition', data)
+        } else {
+            console.log('ERR: no player to update')
         }
     })
 })
