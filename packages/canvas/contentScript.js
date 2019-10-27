@@ -8,19 +8,18 @@ right.id = 'right'
 body.insertBefore(right, body.firstChild)
 body.insertBefore(left, body.firstChild)
 
-var urlParams = new URLSearchParams(window.location.search);
+const urlParams = new URLSearchParams(window.location.search)
 
-if(!urlParams.has('nodale')){
-  DalesVoice.load()
+if (!urlParams.has('nodale')) {
+    DalesVoice.load()
 }
 
-const welcomeText = `<p>Hey!! Dale here.</p>
+const welcomeText = `
+<p>Hey!! Dale here.</p>
 <p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
 <p>Come with me and play.... Dale-io Kart!!!</p>
-
-  var welcomeText=`<p>Hey!! Dale here.</p>
-  <p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
-  <p>Come with me and play.... Dale-io Kart!!!</p>
+<button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>
+`
 
 DalesVoice.speak(welcomeText)
 
