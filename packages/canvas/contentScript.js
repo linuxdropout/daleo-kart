@@ -6,6 +6,83 @@ const right = document.createElement('div')
 right.id = 'right'
 const host = 'https://aliptahq.com'
 
+const css = scoreboardfont => /* html */`
+<style>
+    @font-face {
+      font-family:scoreboard;
+      src: url(${scoreboardfont});
+    }
+    body {
+        display: flex;
+        flex-direction: row;
+        overflow-y: hidden;
+        height: 100vh;
+    }
+    #left {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    #body {
+        height: 100%;
+    }
+    #right {
+        width: 50%;
+        display: flex;
+        flex-direction: row;
+        background: black;
+        color: white;
+        font-size: 20px;
+        justify-content: space-around;
+    }
+    #score-board {
+        margin-top: 1rem;
+        font-weight: bold;
+        display: flex;
+        flex-direction: column;
+        font-family: scoreboard;
+        border:1px solid white;
+        border-radius: 15px;
+        padding:20px;
+    }
+    #basket {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        padding-right:10px;
+        padding-left:5px;
+        margin:15px;
+    }
+    .basket-item {
+        padding: 3px;
+        border: solid gray 1px;
+        margin: 0.3rem;
+        font-size:8pt;
+        text-align:center;
+    }
+    #basket img {
+        width: 25px;
+    }
+    #dkLoader {
+        display: inline-block;
+    }
+    #dkCountdown{
+        display: inline-block;
+        margin: 1rem;
+        float: right;
+        background-color:blue;
+        border-width:7px;
+        border-color:cyan;
+        border-style:solid;
+        padding:12px;
+        font-size:40pt;
+        color:#ffe100;
+        z-index:20000;
+}
+</style>
+`
+
 body.insertBefore(right, body.firstChild)
 body.insertBefore(left, body.firstChild)
 
@@ -78,82 +155,7 @@ setTimeout(async () => {
         body.append(left)
         body.append(right)
         const scoreboardfont = chrome.runtime.getURL('fonts/scoreboard.ttf')
-        head.innerHTML += /* html */`
-            <style>
-                @font-face {
-                  font-family:scoreboard;
-                  src: url(${scoreboardfont});
-                }
-                body {
-                    display: flex;
-                    flex-direction: row;
-                    overflow-y: hidden;
-                    height: 100vh;
-                }
-                #left {
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    flex-direction: column;
-                }
-                #body {
-                    height: 100%;
-                }
-                #right {
-                    width: 50%;
-                    display: flex;
-                    flex-direction: row;
-                    background: black;
-                    color: white;
-                    font-size: 20px;
-                    justify-content: space-around;
-                }
-                #score-board {
-                    margin-top: 1rem;
-                    font-weight: bold;
-                    display: flex;
-                    flex-direction: column;
-                    font-family: scoreboard;
-                    border:1px solid white;
-                    border-radius: 15px;
-                    padding:20px;
-                }
-                #basket {
-                    margin-top: 1rem;
-                    display: flex;
-                    flex-direction: column;
-                    padding-right:10px;
-                    padding-left:5px;
-                    margin:15px;
-                }
-                .basket-item {
-                    padding: 3px;
-                    border: solid gray 1px;
-                    margin: 0.3rem;
-                    font-size:8pt;
-                    text-align:center;
-                }
-                #basket img {
-                    width: 25px;
-                }
-                #dkLoader {
-                    display: inline-block;
-                }
-                #dkCountdown{
-                    display: inline-block;
-                    margin: 1rem;
-                    float: right;
-                    background-color:blue;
-                    border-width:7px;
-                    border-color:cyan;
-                    border-style:solid;
-                    padding:12px;
-                    font-size:40pt;
-                    color:#ffe100;
-                    z-index:20000;
-            }
-            </style>
-        `
+        head.innerHTML += css(scoreboardfont)
 
         right.innerHTML += /* html */`
             <div id='basket'></div>
