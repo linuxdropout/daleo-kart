@@ -6,10 +6,19 @@ const cors = require('cors')
 const io = require('socket.io')(http)
 
 const allPlayers = []
+const allItems = require('./itemData.json')
 
 app.use(cors())
 app.use(bodyParser())
 app.use(express.static('www'))
+
+app.get('/item-data', (req, res) => {
+    console.log('GIVING ITEM DATA')
+    console.log(allItems)
+    return res.json({
+        itemData: allItems
+    })
+})
 
 app.post('/register-player', (req, res, next) => {
     const playerName = req.body.name
