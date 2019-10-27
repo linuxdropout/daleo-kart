@@ -14,11 +14,11 @@ if (!urlParams.has('nodale')) {
     DalesVoice.load()
 }
 
-const welcomeText = `
-<p>Hey!! Dale here.</p>
-<p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
-<p>Come with me and play.... Dale-io Kart!!!</p>
-<button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>
+const welcomeText = /* html */`
+    <p>Hey!! Dale here.</p>
+    <p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
+    <p>Come with me and play.... Dale-io Kart!!!</p>
+    <button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>
 `
 
 DalesVoice.speak(welcomeText)
@@ -31,79 +31,77 @@ setTimeout(async () => {
         body.append(left)
         body.append(right)
         head.innerHTML += /* html */`
-          <style>
-            body {
-              display: flex;
-              flex-direction: row;
-              overflow-y: hidden;
-              height: 100vh;
+            <style>
+                body {
+                    display: flex;
+                    flex-direction: row;
+                    overflow-y: hidden;
+                    height: 100vh;
+                }
+                #left {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                }
+                #body {
+                    height: 100%;
+                }
+                #right {
+                    width: 50%;
+                    display: flex;
+                    flex-direction: row;
+                    background: black;
+                    color: white;
+                    font-size: 20px;
+                    justify-content: space-around;
+                }
+                #score-board {
+                    margin-top: 1rem;
+                    font-weight: bold;
+                    display: flex;
+                    flex-direction: column;
+                }
+                #basket {
+                    margin-top: 1rem;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .basket-item {
+                    padding: 0.5rem;
+                    border: solid white 2px;
+                    margin: 0.3rem;
+                }
+                #basket img {
+                    width: 100px;
+                }
+                #dkLoader {
+                    display: inline-block;
+                }
+                #dkCountdown{
+                    display: inline-block;
+                    margin: 1rem;
+                    float: right;
+                    background-color:blue;
+                    border-width:7px;
+                    border-color:cyan;
+                    border-style:solid;
+                    padding:12px;
+                    font-size:40pt;
+                    color:#ffe100;
+                    z-index:20000;
             }
-            #left {
-              width: 100%;
-              height: 100%;
-              display: flex;
-              flex-direction: column;
-            }
-            #body {
-              height: 100%
-            }
-            #right {
-              width: 50%;
-              display: flex;
-              flex-direction: row;
-              background: black;
-              color: white;
-              font-size: 20px;
-              justify-content: space-around;
-            }
-            #score-board {
-              margin-top: 1rem;
-              font-weight: bold;
-              display: flex;
-              flex-direction: column;
-            }
-            #basket {
-              margin-top: 1rem;
-              display: flex;
-              flex-direction: column;
-            }
-            .basket-item {
-              padding: 0.5rem;
-              border: solid white 2px;
-              margin: 0.3rem;
-            }
-            #basket img {
-              width: 100px;
-            }
-            #dkLoader {
-              display: inline-block;
-            }
-            #dkCountdown{
-              display: inline-block;
-              margin: 1rem;
-              float: right;
-              background-color:blue;
-              border-width:7px;
-              border-color:cyan;
-              border-style:solid;
-              padding:12px;
-              font-size:40pt;
-              color:#ffe100;
-              z-index:20000;
-          }
-          </style>
+            </style>
         `
         right.innerHTML += /* html */`
-        <div id='basket'>
-        </div>
-        <div id='score-board'>
-        </div>
+            <div id='basket'></div>
+            <div id='score-board'></div>
         `
         left.innerHTML += /* html */`
             <div id='body' style="width: 100%; height: 100%;">
                 <div id='registration-form'>
-                    <input type='text' name='lobby' id='lobby-input'>
-                    <input type='text' name='name' id='username-input'>
+                    Lobby: <input type='text' name='lobby' id='lobby-input'><br>
+                    Name: <input type='text' name='name' id='username-input'><br>
                     <button id='form-submit'>Start</button>
                 </div>
             </div>
