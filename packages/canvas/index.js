@@ -146,19 +146,19 @@ class GameObject {
     }
 
     isLeftOf(object) {
-        return ((this.right + this.left) * 1 / 2 < ((object.left + object.right) * 1 / 2))
+        return ((this.right + this.left) * 0.5 < ((object.left + object.right) * 0.5))
     }
 
     isRightOf(object) {
-        return ((this.right + this.left) * 1 / 2 > ((object.left + object.right) * 1 / 2))
+        return ((this.right + this.left) * 0.5 > ((object.left + object.right) * 0.5))
     }
 
     isAbove(object) {
-        return ((this.top + this.bottom) * 1 / 2 < ((object.top + object.bottom) * 1 / 2))
+        return ((this.top + this.bottom) * 0.5 < ((object.top + object.bottom) * 0.5))
     }
 
     isBelow(object) {
-        return ((this.top + this.bottom) * 1 / 2 > ((object.top + object.bottom) * 1 / 2))
+        return ((this.top + this.bottom) * 0.5 > ((object.top + object.bottom) * 0.5))
     }
 
     accelerate({ x = 0, y = 0 } = {}) {
@@ -252,6 +252,29 @@ class AmazonItem extends GameObject {
     draw(ctx) {
         ctx.drawImage(this.image, this.x, this.y, this.w, this.h)
     }
+
+    static generate() {
+        const { itemData } = GLOBALS
+        const randomIndex = Math.floor(Math.random() * itemData.length)
+        const randomItem = itemData[randomIndex]
+
+        const randomXCoordinate = Math.floor(
+            Math.random() * (GLOBALS.world.right - GLOBALS.world.left),
+        ) + GLOBALS.world.left
+        const randomYCoordinate = Math.floor(
+            Math.random() * (GLOBALS.world.top - GLOBALS.world.bottom),
+        ) + GLOBALS.world.bottom
+        const newAmazonItem = new AmazonItem({
+            price: randomItem.price,
+            image: randomItem.image,
+            itemName: randomItem.name,
+            x: randomXCoordinate,
+            y: randomYCoordinate,
+            w: 50,
+            h: 50,
+        })
+        return newAmazonItem
+    }
 }
 
 class Player extends GameObject {
@@ -290,7 +313,7 @@ class Player extends GameObject {
                 item: itemToAdd,
             })
             GLOBALS.GAME_OBJECTS.splice(GLOBALS.GAME_OBJECTS.indexOf(object), 1)
-            generateItem()
+            AmazonItem.generate()
         }
     }
 
@@ -335,25 +358,6 @@ function drawBackground(ctx) {
     ctx.fillRect(left, bottom, right - left, top - bottom)
 }
 
-function generateItem() {
-    const { itemData } = GLOBALS
-    const randomIndex = Math.floor(Math.random() * itemData.length)
-    const randomItem = itemData[randomIndex]
-
-    const randomXCoordinate = Math.floor(Math.random() * (GLOBALS.world.right - GLOBALS.world.left)) + GLOBALS.world.left
-    const randomYCoordinate = Math.floor(Math.random() * (GLOBALS.world.top - GLOBALS.world.bottom)) + GLOBALS.world.bottom
-    const newAmazonItem = new AmazonItem({
-        price: randomItem.price,
-        image: randomItem.image,
-        itemName: randomItem.name,
-        x: randomXCoordinate,
-        y: randomYCoordinate,
-        w: 50,
-        h: 50,
-    })
-    return newAmazonItem
-}
-
 function draw(c, ctx) {
     const { top, right } = GLOBALS.world
 
@@ -395,7 +399,7 @@ function loop(c, ctx, msPerUpdate, time = Date.now(), timeSinceLastUpdate = 0) {
     window.requestAnimationFrame(() => loop(c, ctx, msPerUpdate, ts, timeSinceLastUpdate))
 }
 
-function setupKeyBindings(player) {
+function setupKeyBindings() {
     document.addEventListener('keydown', event => {
         switch (event.key) {
             case 'ArrowRight': keysDown.right = true
@@ -469,7 +473,7 @@ async function main(name) {
         h: 50,
     })
 
-    generateItem()
+    AmazonItem.generate()
 
     setupKeyBindings(GLOBALS.player)
 
@@ -505,6 +509,7 @@ const enterUsername = async name => {
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 async function start(images, itemData) {
     const cachedImages = await cacheImages(images)
     const [

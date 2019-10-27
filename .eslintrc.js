@@ -16,6 +16,9 @@ module.exports = {
     'start': 'writeable',
     'DalesVoice': 'writeable',
     'DkGameControl': 'writeable',
+    'DkTimer': 'writeable',
+    'allPlayers': 'writeable',
+    'enterUsername': 'writeable'
   },
   parserOptions: {
     ecmaFeatures: {
@@ -44,6 +47,7 @@ module.exports = {
     'no-restricted-syntax': 0,
     'curly': ['error', 'multi-line', 'consistent'],
     'no-param-reassign': 0,
-    'no-plusplus': 0
+    'no-plusplus': 0,
+    'no-nested-ternary': 0
   }
 }

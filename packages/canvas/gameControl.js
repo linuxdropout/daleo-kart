@@ -15,12 +15,17 @@ const DkGameControl = {
         DalesVoice.speak(`<p>Right, we're all ready now, ${this.name}, my love.</p><p>You've got ${this.timeToPlay} seconds to grab what you can... </p><p>Get set to go in.... </p>`)
 
         setTimeout(() => {
-            DkTimer.Start(5, false, state => { DalesVoice.simpleSpeak(state.remaining) }, () => { DalesVoice.simpleSpeak('Go wild in the aisles!!!'); DkGameControl.Start() })
+            DkTimer.Start(5, false,
+                state => DalesVoice.simpleSpeak(state.remaining),
+                () => {
+                    DalesVoice.simpleSpeak('Go wild in the aisles!!!')
+                    DkGameControl.Start()
+                })
         }, 3000)
     },
     Start() {
         DkTimer.Start(this.timeToPlay, true, state => {
-            if (state.remaining % 3 == 0) {
+            if (state.remaining % 3 === 0) {
                 DalesVoice.sayFiller()
             }
         },
@@ -37,10 +42,12 @@ const DkGameControl = {
 
             // adding some rnd scores in for testing
             allPlayers.forEach(player => {
-                player.score = parseInt(Math.random() * 100)
+                player.score = parseInt(Math.random() * 100, 10)
             })
 
-            allPlayers = allPlayers.sort((a, b) => ((a.score > b.score) ? 1 : ((b.score > a.score) ? -1 : 0)))
+            allPlayers = allPlayers.sort(
+                (a, b) => ((a.score > b.score) ? 1 : ((b.score > a.score) ? -1 : 0)),
+            )
 
             let s = ''
             allPlayers.forEach((player, index) => {
