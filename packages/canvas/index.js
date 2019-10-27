@@ -44,6 +44,12 @@ const setUpSockets = lobby => {
         if (playerDetails.lobby !== lobby) return
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
+
+        const newElementLobby = document.createElement('h3')
+        newElementLobby.innerHTML = `Lobby: ${playerDetails.lobby}`
+        scoreBoard.append(newElementLobby)
+        scoreBoard.append(document.createElement('br'))
+
         const newElement = document.createElement('div')
         newElement.innerHTML = `${playerDetails.name}: ${playerDetails.score}`
         scoreBoard.append(newElement)
