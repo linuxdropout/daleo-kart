@@ -79,6 +79,8 @@ const setUpSockets = () => {
 const setInitialHighScores = players => {
     allPlayers = players
 
+    console.log(players)
+
     const scoreBoard = document.getElementById('score-board')
     const scoreElements = players.map(player => {
         const newElement = document.createElement('div')

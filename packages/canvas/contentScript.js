@@ -67,8 +67,13 @@ setTimeout(() => {
               display: flex;
               flex-direction: column;
             }
+            .basket-item {
+              padding: 0.5rem;
+              border: solid white 2px;
+              margin: 0.3rem;
+            }
             #basket img {
-              width: 50%;
+              width: 100px;
             }
             #dkLoader {
               display: inline-block;

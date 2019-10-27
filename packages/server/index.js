@@ -45,7 +45,7 @@ io.on('connection', socket => {
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
             playerToGivePoints.basket.push(scoreData.item)
-            playerToGivePoints.score += scoreData.item.points
+            playerToGivePoints.score += scoreData.item.price
             io.emit('getItem', scoreData)
         }
     })
