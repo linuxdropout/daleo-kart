@@ -1,5 +1,4 @@
 
-DkTimer.Start(10, function(state){console.log(state)}, function(){console.log("All done")});
 DalesVoice.load();
 
 var welcomeText=`<p>Hey!! Dale here.</p>
@@ -13,6 +12,8 @@ DalesVoice.speak(welcomeText);
 //to be sorted later
 setTimeout(() => {
   $('#dkStartGame').click(async () => {
+
+    DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name my lovely</p>");
 
     const body = document.getElementsByTagName('BODY')[0]
 
@@ -35,7 +36,11 @@ setTimeout(() => {
         <div id='score-board'></div>
       </div>
     `
-  
+
+    DalesVoice.load();
+    DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name, my lovely.</p>");
+ 
+    document.getElementById('username-input').value = new Date().getTime();
     let images = [
       chrome.runtime.getURL('images/small_tile.jpg'),
       chrome.runtime.getURL('images/shelving_smaller.png'),
@@ -59,13 +64,15 @@ setTimeout(() => {
     images = images.concat(itemImages)
   
     document.getElementById('form-submit').addEventListener('click', () => {
-      const name = document.getElementById('username-input').value
-      enterUsername(name)
+      DkGameControl.Prepare(document.getElementById('username-input').value)
+      
     })
   
     start(images, itemData)
   })
-}, 2000);
+}, 1000);
+
+
 
 
 

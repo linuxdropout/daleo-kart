@@ -24,6 +24,7 @@
         "dkBasket.js",
         "dalesVoice.js",
         "timer.js",
+        "gameControl.js",
         "index.js",
         "contentScript.js"
       ]
