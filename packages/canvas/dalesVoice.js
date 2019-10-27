@@ -59,6 +59,58 @@ const DalesVoice = {
     sayFiller() {
         this.simpleSpeak(this.fillers[Math.floor(Math.random() * this.fillers.length)])
     },
+    commentate(players){
+        console.log(players.length)
+        if(players.length<=1){
+            let rnd = Math.floor(Math.random() * 3)
+            switch(rnd){
+                case 0:
+                    this.simpleSpeak("I think you might win this... There's only you playing!")
+                    break;
+                case 1:
+                    this.simpleSpeak("Quiet in here, isn't it.")
+                    break;
+                case 2:
+                    this.simpleSpeak("Is it me? No-one has turned up.");
+                    break;
+            }
+        }else{
+            let leader = players[players.length-1];
+            let second = players[players.length-2];
+            console.log(leader)
+            console.log(second)
+
+            if(leader.score==second.score){
+                let rnd = Math.floor(Math.random() * 3)
+                switch(rnd){
+                    case 0:
+                        this.speak("<p>It's neck and neck at the top.</p> <p>Someone needs to pull it out of the bag to win this one.</p>")
+                        break;
+                    case 1:
+                        this.simpleSpeak("Too close to call at this stage, all to play for.")
+                        break;
+                    case 2:
+                        this.simpleSpeak("This one might have to be settled in the car park if they can't setle it in the supermarket.");
+                        break;
+                }
+                
+            }else{
+                let rnd = Math.floor(Math.random() * 3)
+                switch(rnd){
+                    case 0:
+                        this.simpleSpeak(leader.name + " out in front at the moment but can they hold on");
+                        break;
+                    case 1:
+                        this.simpleSpeak("By George, " + leader.name + " is on fire today");
+                        break;
+                    case 2:
+                        this.simpleSpeak("The rest of you need to up your game or " + leader.name + " is taking home the goods.");
+                        break;
+                }
+                
+            }
+        }
+    },
     simpleSpeak(words) {
         words = `<p style='min-width:200px; min-height:65px; font-size:16pt; vertical-align:middle;'>${words}</p>`
         this.speak(words)

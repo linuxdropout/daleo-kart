@@ -1,7 +1,19 @@
 const DkGameControl = {
     name: '',
-    lobby: '',
-    timeToPlay: 300,
+    timeToPlay: 60,
+    players: [],
+    SortScores() {
+        // adding some rnd scores in for testing
+
+        this.players = allPlayers
+        this.players.forEach(player => {
+            player.score = parseInt(Math.random() * 100, 10)
+        })
+
+        this.players = this.players.sort(
+            (a, b) => ((a.score > b.score) ? 1 : ((b.score > a.score) ? -1 : 0)),
+        )
+    },
     Prepare(name, lobby) {
         this.name = name
         this.lobby = lobby
@@ -26,16 +38,17 @@ const DkGameControl = {
         }, 3000)
     },
     Start() {
-        DkTimer.Start(
-            this.timeToPlay,
-            true,
-            state => {
-                if (state.remaining % 3 === 0) {
+        DkTimer.Start(this.timeToPlay, true, state => {
+            if (state.remaining % 3 === 0) {
+                if (state.remaining % 6 === 0) {
+                    this.SortScores()
+                    DalesVoice.commentate(this.players)
+                } else {
                     DalesVoice.sayFiller()
                 }
-            },
-            () => DkGameControl.ReviewItems(),
-        )
+            }
+        },
+        () => DkGameControl.ReviewItems())
         enterUsername(this.name, this.lobby)
     },
     ReviewItems() {
@@ -84,20 +97,13 @@ const DkGameControl = {
         setTimeout(() => {
             //
 
-            // adding some rnd scores in for testing
-            allPlayers.forEach(player => {
-                player.score = parseInt(Math.random() * 100, 10)
-            })
-
-            allPlayers = allPlayers.sort(
-                (a, b) => ((a.score > b.score) ? 1 : ((b.score > a.score) ? -1 : 0)),
-            )
+            this.SortScores()
 
             let s = ''
-            allPlayers.forEach((player, index) => {
+            this.players.forEach((player, index) => {
                 if (index === 0) {
                     s += `<p>In last place with ${player.score}  was ${player.name}</p>`
-                } else if (index === allPlayers.length - 1) {
+                } else if (index === this.players.length - 1) {
                     s += `<p style='font-size:150%'> and the winner with <span style='text-weight:bold;font-size:150%;color:gold;'>${player.score}</span>  was... <div style='text-align:center;text-weight:bold;font-size:300%;color:gold;'>${player.name}</div></p><p> Well done ${player.name}, you played out of your skin there!!!</p>`
                 } else {
                     s += `<p>followed by ${player.name} who scored ${player.score}</p>`
