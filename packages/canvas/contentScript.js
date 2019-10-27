@@ -24,6 +24,11 @@ if (!urlParams.has('nodale')) {
     DalesVoice.speak(welcomeText)
 }
 
+function setBodyContent(html) {
+    const bodyElement = document.getElementById('body')
+    bodyElement.innerHTML = html
+}
+
 // to be sorted later
 setTimeout(async () => {
     $('#dkStartGame').click(async () => {
@@ -113,18 +118,19 @@ setTimeout(async () => {
             <div id='basket'></div>
             <div id='score-board'><h1>Scores</h1><h3 id="score-board-lobby">Lobby : </h3><table id='score-board-table'></table></div>
         `
-        $("#basket").hide();
-        $("#score-board").hide();
+        $('#basket').hide()
+        $('#score-board').hide()
 
         left.innerHTML += /* html */`
-            <div id='body' style="width: 100%; height: 100%;">
-                <div id='registration-form'>
-                    Lobby: <input type='text' name='lobby' id='lobby-input'><br>
-                    Name: <input type='text' name='name' id='username-input'><br>
-                    <button id='form-submit'>Start</button>
-                </div>
-            </div>
+            <div id='body' style="width: 100%; height: 100%;"></div>
         `
+        setBodyContent(/* html */`
+            <div id='registration-form'>
+                Lobby: <input type='text' name='lobby' id='lobby-input'><br>
+                Name: <input type='text' name='name' id='username-input'><br>
+                <button id='form-submit'>Start</button>
+            </div>
+        `)
 
         DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name, my lovely.</p>")
 
