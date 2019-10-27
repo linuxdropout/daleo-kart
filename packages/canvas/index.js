@@ -1,4 +1,5 @@
 const GLOBALS = {
+    NUMBER_OF_AMAZON_ITEMS: 10,
     scale: 0,
     msPerUpdate: 1000 / 30,
     GAME_OBJECTS: [],
@@ -488,7 +489,9 @@ async function main(name, initialPlayers) {
         h: 50,
     })
 
-    AmazonItem.generate()
+    for (let i = 0; i < GLOBALS.NUMBER_OF_AMAZON_ITEMS; i++) {
+        AmazonItem.generate()
+    }
 
     setupKeyBindings(GLOBALS.player)
 
