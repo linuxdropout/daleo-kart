@@ -1,8 +1,10 @@
 const DkGameControl = {
     name: '',
+    lobby: '',
     timeToPlay: 300,
-    Prepare(name) {
+    Prepare(name, lobby) {
         this.name = name
+        this.lobby = lobby
         DalesVoice.speak(`<p>That's grand, ${name}. Lovely to have you here in my supermarket, much better than that nasty Amazon.</p><p>Keep calm now, we'll have you up and running in a minute...</p>`)
 
         $('#registration-form').hide()
@@ -24,13 +26,17 @@ const DkGameControl = {
         }, 3000)
     },
     Start() {
-        DkTimer.Start(this.timeToPlay, true, state => {
-            if (state.remaining % 3 === 0) {
-                DalesVoice.sayFiller()
-            }
-        },
-        () => { DkGameControl.ReviewScores() })
-        enterUsername(this.name)
+        DkTimer.Start(
+            this.timeToPlay,
+            true,
+            state => {
+                if (state.remaining % 3 === 0) {
+                    DalesVoice.sayFiller()
+                }
+            },
+            () => DkGameControl.ReviewScores(),
+        )
+        enterUsername(this.name, this.lobby)
     },
     ReviewScores() {
         $('#body').hide()

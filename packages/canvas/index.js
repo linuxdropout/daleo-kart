@@ -38,18 +38,25 @@ const keysDown = {
 }
 let allPlayers = []
 
-
-const setUpSockets = () => {
+const setUpSockets = lobby => {
     if (!io) return
     socket = io('https://aliptahq.com')
     socket.on('newPlayer', playerDetails => {
+        if (playerDetails.lobby !== lobby) return
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
+
+        const newElementLobby = document.createElement('h3')
+        newElementLobby.innerHTML = `Lobby: ${playerDetails.lobby}`
+        scoreBoard.append(newElementLobby)
+        scoreBoard.append(document.createElement('br'))
+
         const newElement = document.createElement('div')
         newElement.innerHTML = `${playerDetails.name}: ${playerDetails.score}`
         scoreBoard.append(newElement)
     })
-    socket.on('getItem', scoreData => {
+    socket.on('setItem', scoreData => {
+        if (scoreData.lobby !== lobby) return
         console.log('SCORE DATA ', scoreData)
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
@@ -499,7 +506,7 @@ async function main(name, initialPlayers) {
 }
 
 // eslint-disable-next-line no-unused-vars
-const enterUsername = async name => {
+const enterUsername = async (name, lobby) => {
     const response = await fetch('https://aliptahq.com/register-player', {
         method: 'POST',
         mode: 'cors',
@@ -512,6 +519,7 @@ const enterUsername = async name => {
         referrer: 'no-referrer',
         body: JSON.stringify({
             name,
+            lobby,
         }),
     })
     const res = await response.json()
@@ -519,7 +527,7 @@ const enterUsername = async name => {
         const registrationForm = document.getElementById('registration-form')
         registrationForm.parentElement.removeChild(registrationForm)
 
-        setUpSockets()
+        setUpSockets(lobby)
         main(name, res.allPlayers)
     } else {
         console.log(res)
