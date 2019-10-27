@@ -1,7 +1,7 @@
 const DkGameControl = {
     name: '',
     lobby: '',
-    timeToPlay: 30,
+    timeToPlay: 300,
     Prepare(name, lobby) {
         this.name = name
         this.lobby = lobby

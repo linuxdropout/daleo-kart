@@ -48,21 +48,32 @@ setTimeout(async () => {
               height: 100%
             }
             #right {
-              width: 200px;
+              width: 50%;
               display: flex;
-              flex-direction: column;
+              flex-direction: row;
               background: black;
               color: white;
               font-size: 20px;
+              justify-content: space-around;
             }
             #score-board {
+              margin-top: 1rem;
               font-weight: bold;
+              display: flex;
+              flex-direction: column;
             }
             #basket {
               margin-top: 1rem;
+              display: flex;
+              flex-direction: column;
             }
-            #basket > img {
-              width: 50%;
+            .basket-item {
+              padding: 0.5rem;
+              border: solid white 2px;
+              margin: 0.3rem;
+            }
+            #basket img {
+              width: 100px;
             }
             #dkLoader {
               display: inline-block;
@@ -83,12 +94,10 @@ setTimeout(async () => {
           </style>
         `
         right.innerHTML += /* html */`
-          <div id='score-board'>
-            <h3> Scores </h3>
-          </div>
-          <div id='basket'>
-            <div> Your basket </div>
-          </div>
+        <div id='basket'>
+        </div>
+        <div id='score-board'>
+        </div>
         `
         left.innerHTML += /* html */`
             <div id='body' style="width: 100%; height: 100%;">
