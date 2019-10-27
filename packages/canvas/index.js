@@ -87,9 +87,19 @@ const setInitialHighScores = players => {
 
         return newElement
     })
+    const scoreBoardTitle = document.createElement('h3')
+    scoreBoardTitle.innerHTML = 'Scores:'
+    scoreBoard.append(scoreBoardTitle)
     for (const element of scoreElements) {
         scoreBoard.append(element)
     }
+}
+
+const setInitialBasket = () => {
+    const basketElement = document.getElementById('basket')
+    const basketTitle = document.createElement('h3')
+    basketTitle.innerHTML = 'Your Basket:'
+    basketElement.append(basketTitle)
 }
 
 class GameObject {
@@ -440,7 +450,7 @@ async function cacheImages(images) {
     return Promise.all(imagePromises)
 }
 
-async function main(name) {
+async function main(name, initialPlayers) {
     const c = document.createElement('canvas')
     const body = document.getElementById('body')
     body.append(c)
@@ -449,6 +459,9 @@ async function main(name) {
     window.addEventListener('resize', () => setScale(c))
     document.addEventListener('resize', () => setScale(c))
     const ctx = c.getContext('2d')
+
+    setInitialHighScores(initialPlayers)
+    setInitialBasket()
 
     const walls = []
     const aisleWidth = 500
@@ -501,9 +514,8 @@ const enterUsername = async name => {
         const registrationForm = document.getElementById('registration-form')
         registrationForm.parentElement.removeChild(registrationForm)
 
-        setInitialHighScores(res.allPlayers)
         setUpSockets()
-        main(name)
+        main(name, res.allPlayers)
     } else {
         console.log(res)
     }

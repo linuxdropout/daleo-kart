@@ -1,6 +1,6 @@
 const DkGameControl = {
     name: '',
-    timeToPlay: 30,
+    timeToPlay: 300,
     Prepare(name) {
         this.name = name
         DalesVoice.speak(`<p>That's grand, ${name}. Lovely to have you here in my supermarket, much better than that nasty Amazon.</p><p>Keep calm now, we'll have you up and running in a minute...</p>`)
