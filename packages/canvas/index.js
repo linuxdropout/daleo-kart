@@ -49,10 +49,29 @@ const setUpSockets = () => {
         scoreBoard.append(newElement)
     })
     socket.on('getItem', scoreData => {
+        console.log('SCORE DATA ', scoreData)
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
+            playerToGivePoints.basket.push(scoreData.item)
             playerToGivePoints.score += scoreData.item.price
             Array.from(document.getElementsByClassName('player-score')).find(el => el.innerHTML.indexOf(scoreData.playerName) > -1).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
+        }
+        if (GLOBALS.player.username === scoreData.playerName) {
+            const basketElement = document.getElementById('basket')
+            const newItem = document.createElement('div')
+            newItem.className = 'basket-item'
+            const newItemImage = document.createElement('img')
+            const newItemName = document.createElement('div')
+            newItemName.innerHTML = scoreData.item.name
+            newItemImage.src = GLOBALS.itemData.find(item => {
+                console.log(item)
+                console.log(scoreData.item)
+                return item.name === scoreData.item.name
+            }).imageSrc
+
+            newItem.append(newItemImage)
+            newItem.append(newItemName)
+            basketElement.append(newItem)
         }
     })
 }
@@ -127,19 +146,19 @@ class GameObject {
     }
 
     isLeftOf(object) {
-        return ((this.right + this.left) * 1/2 < ((object.left + object.right) * 1/2))
+        return ((this.right + this.left) * 1 / 2 < ((object.left + object.right) * 1 / 2))
     }
 
     isRightOf(object) {
-        return ((this.right + this.left) * 1/2 > ((object.left + object.right) * 1/2))
+        return ((this.right + this.left) * 1 / 2 > ((object.left + object.right) * 1 / 2))
     }
 
     isAbove(object) {
-        return ((this.top + this.bottom) * 1/2 < ((object.top + object.bottom) * 1/2))
+        return ((this.top + this.bottom) * 1 / 2 < ((object.top + object.bottom) * 1 / 2))
     }
 
     isBelow(object) {
-        return ((this.top + this.bottom) * 1/2 > ((object.top + object.bottom) * 1/2))
+        return ((this.top + this.bottom) * 1 / 2 > ((object.top + object.bottom) * 1 / 2))
     }
 
     accelerate({ x = 0, y = 0 } = {}) {
@@ -210,6 +229,7 @@ class AmazonItem extends GameObject {
         super(opts)
         this.price = opts.price
         this.image = opts.image
+        this.itemName = opts.itemName
     }
 
     collide(object) {
@@ -239,6 +259,7 @@ class Player extends GameObject {
         super(opts)
         this.username = opts.username
     }
+
     collide(object) {
         if (object instanceof Wall) {
             if (this.right > object.left && this.right - this.dx <= object.left) {
@@ -263,9 +284,10 @@ class Player extends GameObject {
             }
         }
         if (object instanceof AmazonItem) {
+            const itemToAdd = GLOBALS.itemData.find(item => item.name === object.itemName)
             socket.emit('getItem', {
                 playerName: this.username,
-                item: object
+                item: itemToAdd,
             })
             GLOBALS.GAME_OBJECTS.splice(GLOBALS.GAME_OBJECTS.indexOf(object), 1)
             generateItem()
@@ -291,8 +313,8 @@ function setScale(canvas, targetWidth = 1280, targetHeight = 720) {
     const scale = Math.min(scaleX, scaleY)
 
     GLOBALS.scale = scale
-    canvas.width = targetWidth * scale
-    canvas.height = targetHeight * scale
+    canvas.width = body.clientWidth
+    canvas.height = body.clientHeight // * (targetHeight / targetWidth)
 }
 
 function update() {
@@ -314,7 +336,7 @@ function drawBackground(ctx) {
 }
 
 function generateItem() {
-    const itemData = GLOBALS.itemData
+    const { itemData } = GLOBALS
     const randomIndex = Math.floor(Math.random() * itemData.length)
     const randomItem = itemData[randomIndex]
 
@@ -323,10 +345,11 @@ function generateItem() {
     const newAmazonItem = new AmazonItem({
         price: randomItem.price,
         image: randomItem.image,
+        itemName: randomItem.name,
         x: randomXCoordinate,
         y: randomYCoordinate,
         w: 50,
-        h: 50
+        h: 50,
     })
     return newAmazonItem
 }
@@ -337,15 +360,19 @@ function draw(c, ctx) {
     ctx.setTransform(1, 0, 0, 1, 0, 0)
     ctx.clearRect(0, 0, c.width, c.height)
     let camX = -GLOBALS.player.x + c.width / 2
+
     if (camX > right) {
         camX = right
     }
-    if (camX < 0) {
-        camX = 0
+    if (camX < c.clientWidth - right) {
+        camX = c.clientWidth - right
     }
     let camY = -GLOBALS.player.y + c.height / 2
     if (camY > top) {
         camY = top
+    }
+    if (camY < c.clientHeight - top) {
+        camY = c.clientHeight - top
     }
 
     ctx.translate(camX, camY)
@@ -469,7 +496,7 @@ const enterUsername = async name => {
     if (res.success) {
         const registrationForm = document.getElementById('registration-form')
         registrationForm.parentElement.removeChild(registrationForm)
-        
+
         setInitialHighScores(res.allPlayers)
         setUpSockets()
         main(name)
@@ -485,10 +512,9 @@ async function start(images, itemData) {
         shelvingImage,
         trolleyImage,
     ] = cachedImages
-    for (let i=3; i<cachedImages.length; i++) {
-        itemData[i-3]['image'] = cachedImages[i]
+    for (let i = 3; i < cachedImages.length; i++) {
+        itemData[i - 3].image = cachedImages[i]
     }
-    console.log('ITEM DATA ', itemData)
     GLOBALS.backgroundImage = backgroundImage
     GLOBALS.shelvingImage = shelvingImage
     GLOBALS.trolleyImage = trolleyImage
