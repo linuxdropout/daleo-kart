@@ -17,7 +17,7 @@ if (!urlParams.has('nodale')) {
     const welcomeText = `
   <p>Hey!! Dale here.</p>
   <p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
-  <p>Come with me and play.... Dale-io Kart!!!</p>
+  <p>Come with me and play.... Dale-io Kart.... on Supermarket Sweep!!!</p>
   <button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>
   `
 
@@ -31,7 +31,7 @@ setTimeout(async () => {
         body.innerHTML = ''
         body.append(left)
         body.append(right)
-        scoreboardfont = chrome.runtime.getURL('fonts/scoreboard.ttf'),
+        scoreboardfont = chrome.runtime.getURL('fonts/scoreboard.ttf')
         head.innerHTML += `
             <style>
                 @font-face {
@@ -68,19 +68,27 @@ setTimeout(async () => {
                     display: flex;
                     flex-direction: column;
                     font-family: scoreboard;
+                    border:1px solid white;
+                    border-radius: 15px;
+                    padding:20px;
                 }
                 #basket {
                     margin-top: 1rem;
                     display: flex;
                     flex-direction: column;
+                    padding-right:10px;
+                    padding-left:5px;
+                    margin:15px;
                 }
                 .basket-item {
-                    padding: 0.5rem;
-                    border: solid white 2px;
+                    padding: 3px;
+                    border: solid gray 1px;
                     margin: 0.3rem;
+                    font-size:8pt;
+                    text-align:center;
                 }
                 #basket img {
-                    width: 100px;
+                    width: 25px;
                 }
                 #dkLoader {
                     display: inline-block;
@@ -100,10 +108,14 @@ setTimeout(async () => {
             }
             </style>
         `
+
         right.innerHTML += /* html */`
             <div id='basket'></div>
-            <div id='score-board'></div>
+            <div id='score-board'><h1>Scores</h1><h3 id="score-board-lobby">Lobby : </h3><table id='score-board-table'></table></div>
         `
+        $("#basket").hide();
+        $("#score-board").hide();
+
         left.innerHTML += /* html */`
             <div id='body' style="width: 100%; height: 100%;">
                 <div id='registration-form'>

@@ -44,16 +44,9 @@ const setUpSockets = lobby => {
     socket.on('newPlayer', playerDetails => {
         if (playerDetails.lobby !== lobby) return
         allPlayers.push(playerDetails)
-        const scoreBoard = document.getElementById('score-board')
-
-        const newElementLobby = document.createElement('h3')
-        newElementLobby.innerHTML = `Lobby: ${playerDetails.lobby}`
-        scoreBoard.append(newElementLobby)
-        scoreBoard.append(document.createElement('br'))
-
-        const newElement = document.createElement('div')
-        newElement.innerHTML = `${playerDetails.name}: ${playerDetails.score}`
-        scoreBoard.append(newElement)
+        const scoreBoardLobby = document.getElementById('score-board-lobby');
+        scoreBoardLobby.innerHTML = `Lobby: ${playerDetails.lobby}`
+        DkGameControl.ShowScoreboard();
     })
     socket.on('setItem', scoreData => {
         console.log(scoreData)
@@ -63,7 +56,8 @@ const setUpSockets = lobby => {
         if (playerToGivePoints) {
             playerToGivePoints.basket.push(scoreData.item)
             playerToGivePoints.score += scoreData.item.price
-            Array.from(document.getElementsByClassName('player-score')).find(el => el.innerHTML.indexOf(scoreData.playerName) > -1).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
+            DkGameControl.ShowScoreboard();
+            //Array.from(document.getElementsByClassName('player-score')).find(el => el.innerHTML.indexOf(scoreData.playerName) > -1).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
         }
         if (GLOBALS.player.username === scoreData.playerName) {
             const basketElement = document.getElementById('basket')
@@ -82,20 +76,7 @@ const setUpSockets = lobby => {
 
 const setInitialHighScores = players => {
     allPlayers = players
-    const scoreBoard = document.getElementById('score-board')
-    const scoreElements = players.map(player => {
-        const newElement = document.createElement('div')
-        newElement.className = 'player-score'
-        newElement.innerHTML = `${player.name}: ${player.score}`
-
-        return newElement
-    })
-    const scoreBoardTitle = document.createElement('h3')
-    scoreBoardTitle.innerHTML = 'Scores:'
-    scoreBoard.append(scoreBoardTitle)
-    for (const element of scoreElements) {
-        scoreBoard.append(element)
-    }
+    DkGameControl.ShowScoreboard();
 }
 
 const setInitialBasket = () => {
@@ -103,6 +84,9 @@ const setInitialBasket = () => {
     const basketTitle = document.createElement('h3')
     basketTitle.innerHTML = 'Your Basket:'
     basketElement.append(basketTitle)
+
+    $("#basket").show();
+
 }
 
 class GameObject {

@@ -6,13 +6,42 @@ const DkGameControl = {
         // adding some rnd scores in for testing
 
         this.players = allPlayers
-        this.players.forEach(player => {
+        /*this.players.forEach(player => {
             player.score = parseInt(Math.random() * 100, 10)
-        })
+        })*/
 
         this.players = this.players.sort(
             (a, b) => ((a.score > b.score) ? 1 : ((b.score > a.score) ? -1 : 0)),
         )
+    },   
+    SortScoresDesc() {
+        // adding some rnd scores in for testing
+
+        this.players = allPlayers
+        /*this.players.forEach(player => {
+            player.score = parseInt(Math.random() * 100, 10)
+        })*/
+
+        this.players = this.players.sort(
+            (a, b) => ((a.score < b.score) ? 1 : ((b.score < a.score) ? -1 : 0)),
+        )
+    },
+    ShowScoreboard(){
+        this.SortScoresDesc();
+        if(this.players.length>0){
+            $("#score-board").show();
+            $("#score-board-table").html();
+
+            let s = ''
+            this.players.forEach((player, index) => {
+                s += `<tr><td>${player.name}</td><td style="text-align:right">£${player.score.toFixed(2) }</td><tr>`
+                
+            })
+
+            $("#score-board-table").html(s);
+        }else{
+            $("#score-board").hide();
+        }
     },
     Prepare(name, lobby) {
         this.name = name
@@ -67,19 +96,19 @@ const DkGameControl = {
                     <p>
                         You collected one 
                         <span style="color: gold; font-weight:bold;">${basketItem.name}</span>
-                        worth <span style="color: gold; font-weight:bold;">£ ${basketItem.price}</span>,
+                        worth <span style="color: gold; font-weight:bold;">£ ${basketItem.price.toFixed()}</span>,
                     </p>`
                 } else if (index === basket.length - 1) {
                     s += `
                     <p> 
                         and one <span style="color: gold; font-weight:bold;">${basketItem.name}</span>
-                        worth <span style="color: gold; font-weight:bold;">£ ${basketItem.price}</span>!
+                        worth <span style="color: gold; font-weight:bold;">£ ${basketItem.price.toFixed()}</span>!
                     </p>`
                 } else {
                     s += `
                         <p>
                             one <span style="color: gold; font-weight:bold;">${basketItem.name}</span>
-                            worth <span style="color: gold; font-weight:bold;">£ ${basketItem.price}</span>,
+                            worth <span style="color: gold; font-weight:bold;">£ ${basketItem.price.toFixed()}</span>,
                         </p>`
                 }
             })
@@ -106,7 +135,7 @@ const DkGameControl = {
                 } else if (index === this.players.length - 1) {
                     s += `<p style='font-size:150%'> and the winner with <span style='text-weight:bold;font-size:150%;color:gold;'>${player.score}</span>  was... <div style='text-align:center;text-weight:bold;font-size:300%;color:gold;'>${player.name}</div></p><p> Well done ${player.name}, you played out of your skin there!!!</p>`
                 } else {
-                    s += `<p>followed by ${player.name} who scored ${player.score}</p>`
+                    s += `<p>followed by the lovely ${player.name} who scored ${player.score.toFixed(2)}</p>`
                 }
             })
 
