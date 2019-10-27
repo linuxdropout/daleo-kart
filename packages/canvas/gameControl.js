@@ -14,8 +14,9 @@ const DkGameControl = {
             (a, b) => ((a.score > b.score) ? 1 : ((b.score > a.score) ? -1 : 0)),
         )
     },
-    Prepare(name) {
+    Prepare(name, lobby) {
         this.name = name
+        this.lobby = lobby
         DalesVoice.speak(`<p>That's grand, ${name}. Lovely to have you here in my supermarket, much better than that nasty Amazon.</p><p>Keep calm now, we'll have you up and running in a minute...</p>`)
 
         $('#registration-form').hide()
@@ -48,7 +49,7 @@ const DkGameControl = {
             }
         },
         () => { DkGameControl.ReviewScores() })
-        enterUsername(this.name)
+        enterUsername(this.name, this.lobby)
     },
     ReviewScores() {
         $('#body').hide()

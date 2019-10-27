@@ -26,87 +26,93 @@ if (!urlParams.has('nodale')) {
 }
 
 // to be sorted later
-setTimeout(() => {
+setTimeout(async () => {
     $('#dkStartGame').click(async () => {
         DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name my lovely</p>")
         body.innerHTML = ''
         body.append(left)
         body.append(right)
-
         scoreboardfont = chrome.runtime.getURL('fonts/scoreboard.ttf'),
-        head.innerHTML += `
-          <style>
-            @font-face {
-              font-family:scoreboard;
-              src: url(${scoreboardfont});
+        head.innerHTML += /* html */`
+            <style>
+                @font-face {
+                  font-family:scoreboard;
+                  src: url(${scoreboardfont});
+                }
+                body {
+                    display: flex;
+                    flex-direction: row;
+                    overflow-y: hidden;
+                    height: 100vh;
+                }
+                #left {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                }
+                #body {
+                    height: 100%;
+                }
+                #right {
+                    width: 50%;
+                    display: flex;
+                    flex-direction: row;
+                    background: black;
+                    color: white;
+                    font-size: 20px;
+                    justify-content: space-around;
+                }
+                #score-board {
+                    margin-top: 1rem;
+                    font-weight: bold;
+                    display: flex;
+                    flex-direction: column;
+                    font-family: scoreboard;
+                }
+                #basket {
+                    margin-top: 1rem;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .basket-item {
+                    padding: 0.5rem;
+                    border: solid white 2px;
+                    margin: 0.3rem;
+                }
+                #basket img {
+                    width: 100px;
+                }
+                #dkLoader {
+                    display: inline-block;
+                }
+                #dkCountdown{
+                    display: inline-block;
+                    margin: 1rem;
+                    float: right;
+                    background-color:blue;
+                    border-width:7px;
+                    border-color:cyan;
+                    border-style:solid;
+                    padding:12px;
+                    font-size:40pt;
+                    color:#ffe100;
+                    z-index:20000;
             }
-
-            body {
-              display: flex;
-              flex-direction: row;
-              overflow-y: hidden;
-              height: 100vh;
-            }
-            #left {
-              width: 100%;
-              height: 100%;
-              display: flex;
-              flex-direction: column;
-            }
-            #body {
-              height: 100%
-            }
-            #right {
-              width: 200px;
-              display: flex;
-              flex-direction: column;
-              background: black;
-              color: white;
-              font-size: 20px;
-            }
-            #score-board {
-              font-weight:bold;
-              font-family:scoreboard;
-            }
-            #basket {
-              margin-top: 1rem;
-            }
-            #basket > img {
-              width: 50%;
-            }
-            #dkLoader {
-              display: inline-block;
-            }
-            #dkCountdown{
-              display: inline-block;
-              margin: 1rem;
-              float: right;
-              background-color:blue;
-              border-width:7px;
-              border-color:cyan;
-              border-style:solid;
-              padding:12px;
-              font-size:40pt;
-              color:#ffe100;
-              z-index:20000;
-          }
-          </style>
+            </style>
         `
-        right.innerHTML += `
-          <div id='score-board'>
-            <h3> Scores </h3>
-          </div>
-          <div id='basket'>
-            <div> Your basket </div>
-          </div>
+        right.innerHTML += /* html */`
+            <div id='basket'></div>
+            <div id='score-board'></div>
         `
-        left.innerHTML += `
-          <div id='body' style="width: 100%; height: 100%;">
-            <div id='registration-form'>
-              <input type='text' name='name' id='username-input'>
-              <button id='form-submit'>Start</button>
+        left.innerHTML += /* html */`
+            <div id='body' style="width: 100%; height: 100%;">
+                <div id='registration-form'>
+                    Lobby: <input type='text' name='lobby' id='lobby-input'><br>
+                    Name: <input type='text' name='name' id='username-input'><br>
+                    <button id='form-submit'>Start</button>
+                </div>
             </div>
-          </div>
         `
 
         DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name, my lovely.</p>")
@@ -134,7 +140,10 @@ setTimeout(() => {
         images = images.concat(itemImages)
 
         document.getElementById('form-submit').addEventListener('click', () => {
-            DkGameControl.Prepare(document.getElementById('username-input').value)
+            DkGameControl.Prepare(
+                document.getElementById('username-input').value,
+                document.getElementById('lobby-input').value,
+            )
         })
 
         start(images, itemData)

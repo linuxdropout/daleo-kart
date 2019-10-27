@@ -1,4 +1,5 @@
 const GLOBALS = {
+    NUMBER_OF_AMAZON_ITEMS: 10,
     scale: 0,
     msPerUpdate: 1000 / 30,
     GAME_OBJECTS: [],
@@ -37,18 +38,25 @@ const keysDown = {
 }
 let allPlayers = []
 
-
-const setUpSockets = () => {
+const setUpSockets = lobby => {
     if (!io) return
     socket = io('https://aliptahq.com')
     socket.on('newPlayer', playerDetails => {
+        if (playerDetails.lobby !== lobby) return
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
+
+        const newElementLobby = document.createElement('h3')
+        newElementLobby.innerHTML = `Lobby: ${playerDetails.lobby}`
+        scoreBoard.append(newElementLobby)
+        scoreBoard.append(document.createElement('br'))
+
         const newElement = document.createElement('div')
         newElement.innerHTML = `${playerDetails.name}: ${playerDetails.score}`
         scoreBoard.append(newElement)
     })
-    socket.on('getItem', scoreData => {
+    socket.on('setItem', scoreData => {
+        if (scoreData.lobby !== lobby) return
         console.log('SCORE DATA ', scoreData)
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
@@ -79,6 +87,8 @@ const setUpSockets = () => {
 const setInitialHighScores = players => {
     allPlayers = players
 
+    console.log(players)
+
     const scoreBoard = document.getElementById('score-board')
     const scoreElements = players.map(player => {
         const newElement = document.createElement('div')
@@ -87,9 +97,19 @@ const setInitialHighScores = players => {
 
         return newElement
     })
+    const scoreBoardTitle = document.createElement('h3')
+    scoreBoardTitle.innerHTML = 'Scores:'
+    scoreBoard.append(scoreBoardTitle)
     for (const element of scoreElements) {
         scoreBoard.append(element)
     }
+}
+
+const setInitialBasket = () => {
+    const basketElement = document.getElementById('basket')
+    const basketTitle = document.createElement('h3')
+    basketTitle.innerHTML = 'Your Basket:'
+    basketElement.append(basketTitle)
 }
 
 class GameObject {
@@ -440,7 +460,7 @@ async function cacheImages(images) {
     return Promise.all(imagePromises)
 }
 
-async function main(name) {
+async function main(name, initialPlayers) {
     const c = document.createElement('canvas')
     const body = document.getElementById('body')
     body.append(c)
@@ -449,6 +469,9 @@ async function main(name) {
     window.addEventListener('resize', () => setScale(c))
     document.addEventListener('resize', () => setScale(c))
     const ctx = c.getContext('2d')
+
+    setInitialHighScores(initialPlayers)
+    setInitialBasket()
 
     const walls = []
     const aisleWidth = 500
@@ -473,7 +496,9 @@ async function main(name) {
         h: 50,
     })
 
-    AmazonItem.generate()
+    for (let i = 0; i < GLOBALS.NUMBER_OF_AMAZON_ITEMS; i++) {
+        AmazonItem.generate()
+    }
 
     setupKeyBindings(GLOBALS.player)
 
@@ -481,7 +506,7 @@ async function main(name) {
 }
 
 // eslint-disable-next-line no-unused-vars
-const enterUsername = async name => {
+const enterUsername = async (name, lobby) => {
     const response = await fetch('https://aliptahq.com/register-player', {
         method: 'POST',
         mode: 'cors',
@@ -494,6 +519,7 @@ const enterUsername = async name => {
         referrer: 'no-referrer',
         body: JSON.stringify({
             name,
+            lobby,
         }),
     })
     const res = await response.json()
@@ -501,9 +527,8 @@ const enterUsername = async name => {
         const registrationForm = document.getElementById('registration-form')
         registrationForm.parentElement.removeChild(registrationForm)
 
-        setInitialHighScores(res.allPlayers)
-        setUpSockets()
-        main(name)
+        setUpSockets(lobby)
+        main(name, res.allPlayers)
     } else {
         console.log(res)
     }
