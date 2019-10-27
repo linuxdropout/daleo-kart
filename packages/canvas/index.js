@@ -1,7 +1,10 @@
 const GLOBALS = {
     scale: 0,
-    msPerUpdate: 1000 / 60,
+    msPerUpdate: 1000 / 30,
     GAME_OBJECTS: [],
+    itemData: [],
+    amazonItems: [],
+    basket: [],
     player: null,
     world: {
         bottom: -1000,
@@ -10,6 +13,7 @@ const GLOBALS = {
         right: 1000,
     },
 }
+let socket = null
 
 function overlaps(obj1, obj2) {
     if (obj1 === obj2) return false
@@ -36,7 +40,7 @@ let allPlayers = []
 
 const setUpSockets = () => {
     if (!io) return
-    const socket = io('https://aliptahq.com')
+    socket = io('https://aliptahq.com')
     socket.on('newPlayer', playerDetails => {
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
@@ -44,10 +48,10 @@ const setUpSockets = () => {
         newElement.innerHTML = `${playerDetails.name}: ${playerDetails.score}`
         scoreBoard.append(newElement)
     })
-    socket.on('scoreIncrease', scoreData => {
+    socket.on('getItem', scoreData => {
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
-            playerToGivePoints.score += scoreData.points
+            playerToGivePoints.score += scoreData.item.price
             Array.from(document.getElementsByClassName('player-score')).find(el => el.innerHTML.indexOf(scoreData.playerName) > -1).innerHTML = `${playerToGivePoints.name}: ${playerToGivePoints.score}`
         }
     })
@@ -122,6 +126,22 @@ class GameObject {
         this.x = value - this.w
     }
 
+    isLeftOf(object) {
+        return ((this.right + this.left) * 1/2 < ((object.left + object.right) * 1/2))
+    }
+
+    isRightOf(object) {
+        return ((this.right + this.left) * 1/2 > ((object.left + object.right) * 1/2))
+    }
+
+    isAbove(object) {
+        return ((this.top + this.bottom) * 1/2 < ((object.top + object.bottom) * 1/2))
+    }
+
+    isBelow(object) {
+        return ((this.top + this.bottom) * 1/2 > ((object.top + object.bottom) * 1/2))
+    }
+
     accelerate({ x = 0, y = 0 } = {}) {
         this.ddx += x
         this.ddy -= y
@@ -185,7 +205,40 @@ class GameObject {
 
 class Wall extends GameObject { }
 
+class AmazonItem extends GameObject {
+    constructor(opts) {
+        super(opts)
+        this.price = opts.price
+        this.image = opts.image
+    }
+
+    collide(object) {
+        if (object instanceof Wall || object instanceof AmazonItem) {
+            if (this.right > object.left && this.isLeftOf(object)) {
+                this.right = object.left - 1
+            }
+            if (this.left < object.right && this.isRightOf(object)) {
+                this.left = object.right + 1
+            }
+            if (this.top > object.bottom && this.isBelow(object)) {
+                this.top = object.top + 1
+            }
+            if (this.bottom < object.top && this.isBelow(object)) {
+                this.top = object.bottom - 1
+            }
+        }
+    }
+
+    draw(ctx) {
+        ctx.drawImage(this.image, this.x, this.y, this.w, this.h)
+    }
+}
+
 class Player extends GameObject {
+    constructor(opts) {
+        super(opts)
+        this.username = opts.username
+    }
     collide(object) {
         if (object instanceof Wall) {
             if (this.right > object.left && this.right - this.dx <= object.left) {
@@ -208,6 +261,14 @@ class Player extends GameObject {
                 this.dy *= -this.coefResitution
                 this.dx *= this.coefFriction
             }
+        }
+        if (object instanceof AmazonItem) {
+            socket.emit('getItem', {
+                playerName: this.username,
+                item: object
+            })
+            GLOBALS.GAME_OBJECTS.splice(GLOBALS.GAME_OBJECTS.indexOf(object), 1)
+            generateItem()
         }
     }
 
@@ -250,6 +311,24 @@ function drawBackground(ctx) {
     const ptrn = ctx.createPattern(GLOBALS.backgroundImage, 'repeat')
     ctx.fillStyle = ptrn
     ctx.fillRect(left, bottom, right - left, top - bottom)
+}
+
+function generateItem() {
+    const itemData = GLOBALS.itemData
+    const randomIndex = Math.floor(Math.random() * itemData.length)
+    const randomItem = itemData[randomIndex]
+
+    const randomXCoordinate = Math.floor(Math.random() * (GLOBALS.world.right - GLOBALS.world.left)) + GLOBALS.world.left
+    const randomYCoordinate = Math.floor(Math.random() * (GLOBALS.world.top - GLOBALS.world.bottom)) + GLOBALS.world.bottom
+    const newAmazonItem = new AmazonItem({
+        price: randomItem.price,
+        image: randomItem.image,
+        x: randomXCoordinate,
+        y: randomYCoordinate,
+        w: 50,
+        h: 50
+    })
+    return newAmazonItem
 }
 
 function draw(c, ctx) {
@@ -330,7 +409,7 @@ async function cacheImages(images) {
     return Promise.all(imagePromises)
 }
 
-async function main(images) {
+async function main(name) {
     const c = document.createElement('canvas')
     const body = document.getElementById('body')
     body.append(c)
@@ -356,11 +435,14 @@ async function main(images) {
     }
 
     GLOBALS.player = new Player({
+        username: name,
         x: -25,
         y: 925,
         w: 50,
         h: 50,
     })
+
+    generateItem()
 
     setupKeyBindings(GLOBALS.player)
 
@@ -387,21 +469,28 @@ const enterUsername = async name => {
     if (res.success) {
         const registrationForm = document.getElementById('registration-form')
         registrationForm.parentElement.removeChild(registrationForm)
+        
         setInitialHighScores(res.allPlayers)
         setUpSockets()
-        main()
+        main(name)
     } else {
         console.log(res)
     }
 }
 
-async function start(images) {
+async function start(images, itemData) {
+    const cachedImages = await cacheImages(images)
     const [
         backgroundImage,
         shelvingImage,
         trolleyImage,
-    ] = await cacheImages(images)
+    ] = cachedImages
+    for (let i=3; i<cachedImages.length; i++) {
+        itemData[i-3]['image'] = cachedImages[i]
+    }
+    console.log('ITEM DATA ', itemData)
     GLOBALS.backgroundImage = backgroundImage
     GLOBALS.shelvingImage = shelvingImage
     GLOBALS.trolleyImage = trolleyImage
+    GLOBALS.itemData = itemData
 }
