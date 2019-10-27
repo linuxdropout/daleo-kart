@@ -4,6 +4,7 @@ const left = document.createElement('div')
 left.id = 'left'
 const right = document.createElement('div')
 right.id = 'right'
+const host = 'https://aliptahq.com'
 
 body.insertBefore(right, body.firstChild)
 body.insertBefore(left, body.firstChild)
@@ -27,6 +28,25 @@ if (!urlParams.has('nodale')) {
 function setBodyContent(html) {
     const bodyElement = document.getElementById('body')
     bodyElement.innerHTML = html
+}
+
+async function makeApiCall(path, method = 'GET', postBody) {
+    const request = {
+        method,
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer',
+    }
+    if (postBody) {
+        request.body = JSON.stringify(postBody)
+    }
+    const response = await fetch(`${host}${path}`, request)
+    return response.json()
 }
 
 // to be sorted later
@@ -142,18 +162,7 @@ setTimeout(async () => {
             chrome.runtime.getURL('images/shopping-cart-left.png'),
         ]
 
-        const response = await fetch('https://aliptahq.com/item-data', {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            redirect: 'follow',
-            referrer: 'no-referrer',
-        })
-        const { itemData } = await response.json()
+        const { itemData } = await makeApiCall('/item-data')
         const itemImages = itemData.map(data => data.imageSrc)
         images = images.concat(itemImages)
 
