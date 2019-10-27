@@ -1,3 +1,4 @@
+cd /home/ec2-user/daleo-kart
 git reset --hard
 git pull
 npm i
