@@ -1,3 +1,5 @@
+import { on } from 'cluster'
+
 const head = document.getElementsByTagName('HEAD')[0]
 const body = document.getElementsByTagName('BODY')[0]
 const left = document.createElement('div')
@@ -104,6 +106,66 @@ if (!urlParams.has('nodale')) {
 function setBodyContent(html) {
     const bodyElement = document.getElementById('body')
     bodyElement.innerHTML = html
+}
+
+const onClick = (id, cb) => document.getElementById(id).addEventListener('click', cb)
+const val = id => document.getElementById(id)
+
+const registrationForm = onSubmit => {
+    setBodyContent(/* html */`
+        <div id='registration-form'>
+            Name: <input type='text' name='name' id='registration-form-input'><br>
+            <button id='registration-form-submit'>Submit</button>
+        </div>
+    `)
+    onClick('registration-form-submit', () => onSubmit(val('registration-form-submit')))
+}
+
+const lobbyChoose = (lobbies, onCreate, onJoin) => {
+    setBodyContent(/* html */`
+        <table>
+            ${lobbies.map(lobby => /* html */`
+                <tr>
+                    <td>${lobby.name}</td>
+                    <td>${lobby.players.length}</td>
+                    <td><button id='${lobby.name}'>Join Lobby</button></td>
+                </tr>
+            `)}
+        </table>
+        <div>
+            <input type='text' id='lobby'>
+            <button id='create-lobby'>Create Lobby</button>
+        </div>
+    `)
+    onClick('create-lobby', () => onCreate(val('lobby')))
+    for (const lobby of lobbies) {
+        onClick(lobby.name, () => onJoin(lobby.name))
+    }
+}
+
+const lobbyInfo = (player, lobby, onReady, onStart) => {
+    const playersReady = !lobby.players.find(lobbyPlayer => !lobbyPlayer.ready)
+
+    setBodyContent(/* html */`
+        <h3>${player.name}</h3>
+        <span>High Score: <b>${player.highScore}</b></span><br>
+        <button id='ready'>Ready!</button>
+        <hr>
+
+        <h3>Lobby - ${lobby.name}</h3>
+        <table>
+            ${lobby.players.map(lobbyPlayer => /* html */`
+                <tr>
+                    <td>${lobbyPlayer.name}</td>
+                    <td>${lobbyPlayer.ready ? 'ready!' : 'waiting...'}</td>
+                </tr>
+            `)}
+        </table>
+        ${playersReady ? '<button id="start">Start Game!</button>' : '<div>Please wait for everyone to be ready...</div>'}
+    `)
+
+    if (playersReady) onClick('start', onStart)
+    onClick('ready', onReady)
 }
 
 async function makeApiCall(path, method = 'GET', postBody) {
