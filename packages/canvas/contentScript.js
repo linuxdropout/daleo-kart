@@ -1,5 +1,3 @@
-import { on } from 'cluster'
-
 const head = document.getElementsByTagName('HEAD')[0]
 const body = document.getElementsByTagName('BODY')[0]
 const left = document.createElement('div')
