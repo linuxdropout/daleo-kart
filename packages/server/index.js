@@ -12,7 +12,7 @@ const allItems = require('./itemData.json')
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*')
     if (req.method === 'OPTIONS') return res.status(200).end()
-    next()
+    return next()
 })
 app.use(cors())
 app.use(bodyParser())
@@ -22,7 +22,7 @@ app.get('/item-data', (req, res) => res.json({
     itemData: allItems,
 }))
 
-app.post('/register-player', (req, res, next) => {
+app.post('/register-player', (req, res) => {
     const playerName = req.body.name
     if (allPlayers.filter(player => player.name === playerName).length === 0) {
         const playerData = {
@@ -38,7 +38,7 @@ app.post('/register-player', (req, res, next) => {
         })
     }
 
-    res.json({
+    return res.json({
         success: false,
         message: 'A player with that name is already playing',
     })
