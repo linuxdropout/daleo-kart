@@ -74,5 +74,4 @@ const DalesVoice = {
             document.getElementById('dalesVoice').innerHTML = ''
         })
     },
-
 }
