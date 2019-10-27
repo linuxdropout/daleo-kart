@@ -15,6 +15,24 @@
         "name": "Toilet Paper",
         "href": "https://www.amazon.co.uk/Andrex-Gentle-Puppies-Toilet-Tissue/dp/B004OCO20E/ref=zg_bs_drugstore_5?_encoding=UTF8&psc=1&refRID=WPRQT6H66NGEMKSD593R",
         "imageSrc": "https://images-na.ssl-images-amazon.com/images/I/71ys0ykrj5L._AC_SX425_.jpg",
-        "price": 500
+        "price": 5
+    },
+    {
+        "name": "Bike Light",
+        "href": "https://www.amazon.co.uk/WAKYME-Rechargeable-Intelligent-Combinations-Flashlight/dp/B07RFJYK12?pf_rd_p=c4861c1a-6fda-4890-9f8d-37412e8ab94b&pd_rd_wg=zW3hJ&pf_rd_r=SMYZJ7PBJNGE9CACD7M5&ref_=pd_gw_cr_simh&pd_rd_w=9LueW&pd_rd_r=84efe289-7a3b-4f54-b848-3d9de56dec22",
+        "imageSrc": "https://images-na.ssl-images-amazon.com/images/I/61-zn16CkyL._AC_SX679_.jpg",
+        "price": 24.99
+    },
+    {
+        "name": "Working Gloves",
+        "href": "https://www.amazon.co.uk/Pairs-Working-Gloves-Latex-Goatskin/dp/B007RWVYTU?pf_rd_p=e7d04275-5cd1-4679-9368-b46b572add3c&pd_rd_wg=OqNJL&pf_rd_r=X4YHWF61C58043Y6QK52&ref_=pd_gw_ep13n_seasonal_recs_dg&pd_rd_w=gUVGi&pd_rd_r=87a11604-ec3c-406e-98dd-fcb24160b25f",
+        "imageSrc": "https://images-na.ssl-images-amazon.com/images/I/8123Wm74EKL._AC_SY879_.jpg",
+        "price": 9.99
+    },
+    {
+        "name": "GoPro",
+        "href": "https://www.amazon.co.uk/dp/B07DCG1GC4/ref=s9_acsd_al_bw_c2_x_1_i?pf_rd_m=A3P5ROKL5A1OLE&pf_rd_s=merchandised-search-5&pf_rd_r=5DVDA6GRSC3HPG44T27D&pf_rd_t=101&pf_rd_p=5f6d0441-1c9b-4099-9d22-20bdf5c4223e&pf_rd_i=16308412031",
+        "imageSrc": "https://images-na.ssl-images-amazon.com/images/I/61D%2Bx%2BOLL4L._AC_SX679_.jpg",
+        "price": 200
     }
 ]
