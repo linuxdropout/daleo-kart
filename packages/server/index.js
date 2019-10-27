@@ -25,7 +25,13 @@ app.post('/register-player', (req, res) => {
     const playerName = req.body.name
     const lobbyName = req.body.lobby
 
-    const allPlayers = gameLobbies[lobbyName]
+    if (!gameLobbies[lobbyName]) {
+        gameLobbies[lobbyName] = {
+            players: [],
+        }
+    }
+
+    const allPlayers = gameLobbies[lobbyName].players
 
     if (allPlayers && allPlayers.filter(player => player.name === playerName).length === 0) {
         const playerData = {
