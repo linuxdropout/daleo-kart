@@ -108,7 +108,9 @@ const DalesVoice = {
         }
     },
     simpleSpeak(words) {
-        words = `<p style='min-width:200px; min-height:65px; font-size:16pt; vertical-align:middle;'>${words}</p>`
+        let fontsize=16;
+        if(words.length>20){fontsize=12}
+        words = `<p style='min-width:200px; min-height:65px; font-size:${fontsize}pt; vertical-align:middle;'>${words}</p>`
         this.speak(words)
     },
     speak(words) {

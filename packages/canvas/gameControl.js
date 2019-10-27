@@ -129,11 +129,11 @@ const DkGameControl = {
             let s = ''
             this.players.forEach((player, index) => {
                 if (index === 0 && this.players.length > 1) {
-                    s += `<p>In last place with ${player.score}  was ${player.name}</p>`
+                    s += `<p>In last place with £${player.score}  was ${player.name}</p>`
                 } else if (index === this.players.length - 1) {
-                    s += `<p style='font-size:150%'> and the winner with <span style='text-weight:bold;font-size:150%;color:gold;'>${player.score}</span>  was... <div style='text-align:center;text-weight:bold;font-size:300%;color:gold;'>${player.name}</div></p><p> Well done ${player.name}, you played out of your skin there!!!</p>`
+                    s += `<p style='font-size:150%'> and the winner with <span style='text-weight:bold;font-size:150%;color:gold;'>£${player.score.toFixed(2)}</span>  was... <div style='text-align:center;text-weight:bold;font-size:300%;color:gold;'>${player.name}</div></p><p> Well done ${player.name}, you played out of your skin there!!!</p>`
                 } else {
-                    s += `<p>followed by the lovely ${player.name} who scored ${player.score.toFixed(2)}</p>`
+                    s += `<p>followed by the lovely ${player.name} who scored £${player.score.toFixed(2)}</p>`
                 }
             })
 
