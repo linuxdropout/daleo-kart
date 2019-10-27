@@ -1,5 +1,12 @@
 
 const DalesVoice = {
+    fillers:[
+        "Oooooh, look at them go!!!",
+        "They're like a bolt from a gun, aren't they!",
+        "Well, not the best I've ever seen...",
+        "Come on, my loves, it's all there to be won.",
+        "This is Supermarket Sweep dear, not Supermarket sleep."
+    ],
     load(){
         const dwface = chrome.runtime.getURL("images/dale_winton_face.webp");
         const speechBubble=`
@@ -32,7 +39,7 @@ const DalesVoice = {
                 }
                 </style>
             
-                <div id='daleokart' style='position:relative;top:0;left:0;width:100%;background-color:white;z-index:10000'>
+                <div id='daleokart' style='position:relative;top:0;left:0;width:80%;background-color:white;z-index:10000'>
                     <div id='dkLoader'>
                     <div id="dalesFace" style="float:left; display: none; margin:10px;">
                         <img src = "${dwface}" style="height:100px;width:100px" style="float:left"/>
@@ -46,6 +53,9 @@ const DalesVoice = {
                 </div>`;
         const body = document.getElementsByTagName('BODY')[0]
         body.insertAdjacentHTML('afterbegin', speechBubble)
+    },
+    sayFiller(){
+        this.simpleSpeak(this.fillers[Math.floor(Math.random() * this.fillers.length)]);
     },
     simpleSpeak(words){
         words = "<p style='min-width:200px; min-height:65px; font-size:16pt; vertical-align:middle;'>" + words + "</p>"

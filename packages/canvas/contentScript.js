@@ -52,7 +52,7 @@ setTimeout(() => {
   
     start(images)
   })
-}, 2000);
+}, 1000);
 
 
 
