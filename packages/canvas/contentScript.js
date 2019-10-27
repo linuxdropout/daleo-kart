@@ -1,19 +1,22 @@
+var urlParams = new URLSearchParams(window.location.search);
 
-DalesVoice.load();
+if(!urlParams.has('nodale')){
 
-var welcomeText=`<p>Hey!! Dale here.</p>
-<p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
-<p>Come with me and play.... Dale-io Kart!!!</p>
+  DalesVoice.load();
 
-<button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>`
+  var welcomeText=`<p>Hey!! Dale here.</p>
+  <p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
+  <p>Come with me and play.... Dale-io Kart!!!</p>
 
-DalesVoice.speak(welcomeText);
+  <button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>`
 
-//to be sorted later
+  DalesVoice.speak(welcomeText);
+
+}
+
+//put delay in to fix issue with waiting for animation to complete. to be sorted later (maybe)
 setTimeout(() => {
   $('#dkStartGame').click(async () => {
-
-    DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name my lovely</p>");
 
     const body = document.getElementsByTagName('BODY')[0]
 

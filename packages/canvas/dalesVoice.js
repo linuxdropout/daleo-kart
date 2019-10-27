@@ -69,7 +69,7 @@ const DalesVoice = {
         });
     },
     hide(words){
-        $("#dalesFace").slideUp( "slow",  function() {;
+        $("#dalesFace").slideUp( "slow",  function() {
             $("#dalesVoice").hide( );
             document.getElementById("dalesVoice").innerHTML = "";
             
