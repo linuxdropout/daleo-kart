@@ -14,15 +14,14 @@ if (!urlParams.has('nodale')) {
     DalesVoice.load()
 
 
-  const welcomeText = `
+    const welcomeText = `
   <p>Hey!! Dale here.</p>
   <p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
   <p>Come with me and play.... Dale-io Kart!!!</p>
   <button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>
   `
 
-  DalesVoice.speak(welcomeText);
-
+    DalesVoice.speak(welcomeText)
 }
 
 // to be sorted later
@@ -140,6 +139,7 @@ setTimeout(async () => {
         images = images.concat(itemImages)
 
         document.getElementById('form-submit').addEventListener('click', () => {
+            console.log(document.getElementById('lobby-input').value)
             DkGameControl.Prepare(
                 document.getElementById('username-input').value,
                 document.getElementById('lobby-input').value,
