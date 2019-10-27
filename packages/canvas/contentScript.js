@@ -12,7 +12,7 @@ DalesVoice.speak(welcomeText);
 
 //to be sorted later
 setTimeout(() => {
-  $('#dkStartGame').click(() => {
+  $('#dkStartGame').click(async () => {
 
     const body = document.getElementsByTagName('BODY')[0]
 
@@ -23,6 +23,8 @@ setTimeout(() => {
           top: 10px;
           right: 10px;
           color: white;
+          font-weight: bold;
+          font-size: 20px;
         }
       </style>
       <div id='body' style="position: fixed; width: 100%; height: 100%;">
@@ -34,18 +36,34 @@ setTimeout(() => {
       </div>
     `
   
-    const images = [
+    let images = [
       chrome.runtime.getURL('images/small_tile.jpg'),
       chrome.runtime.getURL('images/shelving_smaller.png'),
       chrome.runtime.getURL('images/shopping-cart.png'),
     ]
+
+    const response = await fetch('https://aliptahq.com/item-data', {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer'
+    })
+    const { itemData } = await response.json()
+    console.log(itemData)
+    const itemImages = itemData.map(data => data.imageSrc)
+    images = images.concat(itemImages)
   
     document.getElementById('form-submit').addEventListener('click', () => {
       const name = document.getElementById('username-input').value
       enterUsername(name)
     })
   
-    start(images)
+    start(images, itemData)
   })
 }, 2000);
 

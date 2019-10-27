@@ -25,7 +25,8 @@ app.post('/register-player', (req, res, next) => {
     if (allPlayers.filter(player => player.name === playerName).length === 0) {
         const playerData = {
             name: playerName,
-            score: 0
+            score: 0,
+            basket: []
         }
         allPlayers.push(playerData)
         io.sockets.emit('newPlayer', playerData)
@@ -42,11 +43,11 @@ app.post('/register-player', (req, res, next) => {
 })
 
 io.on('connection', socket => {
-    socket.on('scoreIncrease', scoreData => {
+    socket.on('getItem', scoreData => {
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
-            playerToGivePoints.score += scoreData.points
-            io.emit('scoreIncrease', scoreData)
+            playerToGivePoints.score += scoreData.item.points
+            io.emit('getItem', scoreData)
         }
     })
 })
