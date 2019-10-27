@@ -2,3 +2,4 @@ node_modules
 chrome_extension/images/.DS_Store
 chrome_extension/.DS_Store
 .DS_Store
+players.json
