@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx nodemon index.js"
+    "start": "npx nodemon index.js",
+    "lint": "npx eslint ."
   },
   "author": "",
   "license": "ISC",

@@ -15,19 +15,17 @@ const DkTimer = {
         this.onChange = onChange
         this.onEnd = onEnd
 
-        const cs = this.checkState
-        const t = this
         if (showTimer) {
             this.showTimerBox()
         }
-        setTimeout(() => { DkTimer.updateState() }, 1000)
+        setTimeout(() => DkTimer.updateState(), 1000)
     },
     updateState() {
         if (this.remaining > 0) {
             this.onChange({ remaining: this.remaining, current: this.current })
             this.remaining--
             this.current++
-            setTimeout(() => { DkTimer.updateState() }, 1000)
+            setTimeout(() => DkTimer.updateState(), 1000)
         } else {
             this.onEnd()
             this.timerBoxHider = setTimeout(() => {

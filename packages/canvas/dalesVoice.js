@@ -1,4 +1,5 @@
 
+// eslint-disable-next-line no-unused-vars
 const DalesVoice = {
     fillers: [
         'Oooooh, look at them go!!!',
@@ -68,7 +69,7 @@ const DalesVoice = {
             document.getElementById('dalesVoice').innerHTML = words
         })
     },
-    hide(words) {
+    hide() {
         $('#dalesFace').slideUp('slow', () => {
             $('#dalesVoice').hide()
             document.getElementById('dalesVoice').innerHTML = ''

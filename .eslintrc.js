@@ -12,7 +12,10 @@ module.exports = {
     SharedArrayBuffer: 'readonly',
     '$': 'writeable',
     'io': 'writeable',
-    'chrome': 'writeable'
+    'chrome': 'writeable',
+    'start': 'writeable',
+    'DalesVoice': 'writeable',
+    'DkGameControl': 'writeable',
   },
   parserOptions: {
     ecmaFeatures: {
@@ -40,6 +43,7 @@ module.exports = {
     'no-await-in-loop': 0,
     'no-restricted-syntax': 0,
     'curly': ['error', 'multi-line', 'consistent'],
-    'no-param-reassign': 0
+    'no-param-reassign': 0,
+    'no-plusplus': 0
   }
 }
