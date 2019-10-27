@@ -121,6 +121,7 @@ setTimeout(async () => {
             chrome.runtime.getURL('images/small_tile.jpg'),
             chrome.runtime.getURL('images/shelving_smaller.png'),
             chrome.runtime.getURL('images/shopping-cart.png'),
+            chrome.runtime.getURL('images/shopping-cart-left.png'),
         ]
 
         const response = await fetch('https://aliptahq.com/item-data', {

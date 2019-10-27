@@ -339,7 +339,8 @@ class Player extends GameObject {
     }
 
     draw(ctx) {
-        ctx.drawImage(GLOBALS.trolleyImage, this.x, this.y, this.w, this.h)
+        const trolleyImage = this.dx > 0 ? GLOBALS.trolleyImageRight : GLOBALS.trolleyImageLeft
+        ctx.drawImage(trolleyImage, this.x, this.y, this.w, this.h)
     }
 }
 
@@ -534,13 +535,15 @@ async function start(images, itemData) {
     const [
         backgroundImage,
         shelvingImage,
-        trolleyImage,
+        trolleyImageRight,
+        trolleyImageLeft,
     ] = cachedImages
-    for (let i = 3; i < cachedImages.length; i++) {
-        itemData[i - 3].image = cachedImages[i]
+    for (let i = 4; i < cachedImages.length; i++) {
+        itemData[i - 4].image = cachedImages[i]
     }
     GLOBALS.backgroundImage = backgroundImage
     GLOBALS.shelvingImage = shelvingImage
-    GLOBALS.trolleyImage = trolleyImage
+    GLOBALS.trolleyImageRight = trolleyImageRight
+    GLOBALS.trolleyImageLeft = trolleyImageLeft
     GLOBALS.itemData = itemData
 }
