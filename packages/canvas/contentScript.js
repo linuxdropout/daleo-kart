@@ -33,7 +33,7 @@ setTimeout(async () => {
         body.append(left)
         body.append(right)
         scoreboardfont = chrome.runtime.getURL('fonts/scoreboard.ttf'),
-        head.innerHTML += /* html */`
+        head.innerHTML += `
             <style>
                 @font-face {
                   font-family:scoreboard;
