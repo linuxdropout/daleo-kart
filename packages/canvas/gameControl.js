@@ -124,13 +124,11 @@ const DkGameControl = {
         $('#body').hide()
 
         setTimeout(() => {
-            //
-
             this.SortScores()
 
             let s = ''
             this.players.forEach((player, index) => {
-                if (index === 0 && this.players.length>1) {
+                if (index === 0 && this.players.length > 1) {
                     s += `<p>In last place with ${player.score}  was ${player.name}</p>`
                 } else if (index === this.players.length - 1) {
                     s += `<p style='font-size:150%'> and the winner with <span style='text-weight:bold;font-size:150%;color:gold;'>${player.score}</span>  was... <div style='text-align:center;text-weight:bold;font-size:300%;color:gold;'>${player.name}</div></p><p> Well done ${player.name}, you played out of your skin there!!!</p>`
@@ -142,8 +140,28 @@ const DkGameControl = {
             DalesVoice.speak(s)
 
             setTimeout(() => {
-                DkGameControl.SignOff()
+                DkGameControl.EnforcePayment()
             }, 10000)
+        }, 2000)
+    },
+    EnforcePayment() {
+        setTimeout(() => {
+            const losingPlayer = this.players[0]
+            let s = ''
+            if (this.name === losingPlayer.name) {
+                s += `
+                    <p> You came last so you'll be paying for everyone else's basket. Unlucky! </p>
+                `
+            } else {
+                s += `
+                    <p> ${losingPlayer.name} came last so they'll be paying for your entire basket! </p>
+                `
+            }
+            DalesVoice.speak(s)
+
+            setTimeout(() => {
+                DkGameControl.SignOff()
+            }, 6000)
         }, 2000)
     },
     SignOff() {

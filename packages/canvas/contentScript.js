@@ -31,8 +31,8 @@ setTimeout(async () => {
         body.innerHTML = ''
         body.append(left)
         body.append(right)
-        scoreboardfont = chrome.runtime.getURL('fonts/scoreboard.ttf')
-        head.innerHTML += `
+        const scoreboardfont = chrome.runtime.getURL('fonts/scoreboard.ttf')
+        head.innerHTML += /* html */`
             <style>
                 @font-face {
                   font-family:scoreboard;
@@ -133,6 +133,7 @@ setTimeout(async () => {
             chrome.runtime.getURL('images/small_tile.jpg'),
             chrome.runtime.getURL('images/shelving_smaller.png'),
             chrome.runtime.getURL('images/shopping-cart.png'),
+            chrome.runtime.getURL('images/shopping-cart-left.png'),
         ]
 
         const response = await fetch('https://aliptahq.com/item-data', {
