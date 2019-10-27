@@ -24,13 +24,13 @@ const welcomeText = `
 DalesVoice.speak(welcomeText)
 
 // to be sorted later
-setTimeout(() => {
+setTimeout(async () => {
     $('#dkStartGame').click(async () => {
         DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name my lovely</p>")
         body.innerHTML = ''
         body.append(left)
         body.append(right)
-        head.innerHTML += `
+        head.innerHTML += /* html */`
           <style>
             body {
               display: flex;
@@ -82,7 +82,7 @@ setTimeout(() => {
           }
           </style>
         `
-        right.innerHTML += `
+        right.innerHTML += /* html */`
           <div id='score-board'>
             <h3> Scores </h3>
           </div>
@@ -90,13 +90,14 @@ setTimeout(() => {
             <div> Your basket </div>
           </div>
         `
-        left.innerHTML += `
-          <div id='body' style="width: 100%; height: 100%;">
-            <div id='registration-form'>
-              <input type='text' name='name' id='username-input'>
-              <button id='form-submit'>Start</button>
+        left.innerHTML += /* html */`
+            <div id='body' style="width: 100%; height: 100%;">
+                <div id='registration-form'>
+                    <input type='text' name='lobby' id='lobby-input'>
+                    <input type='text' name='name' id='username-input'>
+                    <button id='form-submit'>Start</button>
+                </div>
             </div>
-          </div>
         `
 
         DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name, my lovely.</p>")
@@ -124,7 +125,10 @@ setTimeout(() => {
         images = images.concat(itemImages)
 
         document.getElementById('form-submit').addEventListener('click', () => {
-            DkGameControl.Prepare(document.getElementById('username-input').value)
+            DkGameControl.Prepare(
+                document.getElementById('username-input').value,
+                document.getElementById('lobby-input').value,
+            )
         })
 
         start(images, itemData)

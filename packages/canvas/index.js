@@ -37,18 +37,19 @@ const keysDown = {
 }
 let allPlayers = []
 
-
-const setUpSockets = () => {
+const setUpSockets = lobby => {
     if (!io) return
     socket = io('https://aliptahq.com')
     socket.on('newPlayer', playerDetails => {
+        if (playerDetails.lobby !== lobby) return
         allPlayers.push(playerDetails)
         const scoreBoard = document.getElementById('score-board')
         const newElement = document.createElement('div')
         newElement.innerHTML = `${playerDetails.name}: ${playerDetails.score}`
         scoreBoard.append(newElement)
     })
-    socket.on('getItem', scoreData => {
+    socket.on('setItem', scoreData => {
+        if (scoreData.lobby !== lobby) return
         console.log('SCORE DATA ', scoreData)
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
@@ -481,7 +482,7 @@ async function main(name) {
 }
 
 // eslint-disable-next-line no-unused-vars
-const enterUsername = async name => {
+const enterUsername = async (name, lobby) => {
     const response = await fetch('https://aliptahq.com/register-player', {
         method: 'POST',
         mode: 'cors',
@@ -494,6 +495,7 @@ const enterUsername = async name => {
         referrer: 'no-referrer',
         body: JSON.stringify({
             name,
+            lobby,
         }),
     })
     const res = await response.json()
@@ -502,7 +504,7 @@ const enterUsername = async name => {
         registrationForm.parentElement.removeChild(registrationForm)
 
         setInitialHighScores(res.allPlayers)
-        setUpSockets()
+        setUpSockets(lobby)
         main(name)
     } else {
         console.log(res)
