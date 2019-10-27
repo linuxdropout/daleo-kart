@@ -231,12 +231,12 @@ setTimeout(async () => {
         DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name, my lovely.</p>")
         const playerName = await new Promise(registrationForm)
         const [lobbies, player] = await Promise.all([
-            await makeApiCall('/lobbies'),
-            await makeApiCall('/register-player', 'POST', { playerName }),
+            makeApiCall('/lobbies'),
+            makeApiCall('/register-player', 'POST', { playerName }),
+            preLoad(),
         ])
 
         DalesVoice.speak(`<p>Lovely to meet you ${playerName}, now lets get you into a lobby!</p>`)
-        preLoad()
 
         const onJoinLobby = async lobbyName => {
             const lobby = await makeApiCall('/join-lobby', 'POST', { lobbyName, playerName })
