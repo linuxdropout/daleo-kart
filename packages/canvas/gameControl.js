@@ -1,8 +1,13 @@
 const DkGameControl = {
     name: '',
+<<<<<<< Updated upstream
     lobby: '',
     timeToPlay: 300,
     Prepare(name, lobby) {
+=======
+    timeToPlay: 30,
+    Prepare(name) {
+>>>>>>> Stashed changes
         this.name = name
         this.lobby = lobby
         DalesVoice.speak(`<p>That's grand, ${name}. Lovely to have you here in my supermarket, much better than that nasty Amazon.</p><p>Keep calm now, we'll have you up and running in a minute...</p>`)
@@ -26,6 +31,7 @@ const DkGameControl = {
         }, 3000)
     },
     Start() {
+<<<<<<< Updated upstream
         DkTimer.Start(
             this.timeToPlay,
             true,
@@ -37,11 +43,58 @@ const DkGameControl = {
             () => DkGameControl.ReviewScores(),
         )
         enterUsername(this.name, this.lobby)
+=======
+        DkTimer.Start(this.timeToPlay, true, state => {
+            if (state.remaining % 3 === 0) {
+                DalesVoice.sayFiller()
+            }
+        },
+        () => { DkGameControl.ReviewItems() })
+        enterUsername(this.name)
+>>>>>>> Stashed changes
     },
-    ReviewScores() {
+    ReviewItems() {
         $('#body').hide()
 
         DalesVoice.speak("<p>... and time's up.<p><p>Stop your trolley, come back over here and let's see how you've done...</p>")
+
+        setTimeout(() => {
+            let s = ''
+            const currentPlayer = allPlayers.find(player => player.name === GLOBALS.player.username)
+
+            const { basket } = currentPlayer
+            basket.forEach((basketItem, index) => {
+                if (index === 0) {
+                    s += `
+                    <p>
+                        You collected one 
+                        <span style="color: gold; font-weight:bold;">${basketItem.name}</span>
+                        worth <span style="color: gold; font-weight:bold;">£${basketItem.price}</span>,
+                    </p>`
+                } else if (index === basket.length - 1) {
+                    s += `
+                    <p> 
+                        and one <span style="color: gold; font-weight:bold;">${basketItem.name}</span>
+                        worth <span style="color: gold; font-weight:bold;">£${basketItem.price}</span>!
+                    </p>`
+                } else {
+                    s += `
+                        <p>
+                            one <span style="color: gold; font-weight:bold;">${basketItem.name}</span>
+                            worth <span style="color: gold; font-weight:bold;">£${basketItem.price}</span>,
+                        </p>`
+                }
+            })
+
+            DalesVoice.speak(s)
+
+            setTimeout(() => {
+                DkGameControl.ReviewScores()
+            }, 10000)
+        }, 2000)
+    },
+    ReviewScores() {
+        $('#body').hide()
 
         setTimeout(() => {
             //

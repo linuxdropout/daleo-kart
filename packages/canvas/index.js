@@ -57,7 +57,6 @@ const setUpSockets = lobby => {
     })
     socket.on('setItem', scoreData => {
         if (scoreData.lobby !== lobby) return
-        console.log('SCORE DATA ', scoreData)
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
             playerToGivePoints.basket.push(scoreData.item)
@@ -71,12 +70,7 @@ const setUpSockets = lobby => {
             const newItemImage = document.createElement('img')
             const newItemName = document.createElement('div')
             newItemName.innerHTML = scoreData.item.name
-            newItemImage.src = GLOBALS.itemData.find(item => {
-                console.log(item)
-                console.log(scoreData.item)
-                return item.name === scoreData.item.name
-            }).imageSrc
-
+            newItemImage.src = GLOBALS.itemData.find(item => item.name === scoreData.item.name).imageSrc
             newItem.append(newItemImage)
             newItem.append(newItemName)
             basketElement.append(newItem)
@@ -86,9 +80,6 @@ const setUpSockets = lobby => {
 
 const setInitialHighScores = players => {
     allPlayers = players
-
-    console.log(players)
-
     const scoreBoard = document.getElementById('score-board')
     const scoreElements = players.map(player => {
         const newElement = document.createElement('div')
