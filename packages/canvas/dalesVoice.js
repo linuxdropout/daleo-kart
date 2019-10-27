@@ -38,11 +38,20 @@ const DalesVoice = {
                     margin-top: -13px;
                     margin-left: -26px;
                 }
+                #dalesFace{
+                    -webkit-transition: -webkit-transform .8s ease-in-out;
+                    transition: transform .8s ease-in-out;
+                }
+                #dalesFace:hover {
+                    transform: scale(1.5);
+                    -webkit-transform: rotate(360deg);
+                    transform: rotate(360deg); 
+                  }
                 </style>
             
                 <div id='daleokart' style='position:relative;top:0;left:0;width:100%;background-color:white;z-index:10000'>
                     <div id='dkLoader'>
-                    <div id="dalesFace" style="float:left; display: none; margin:10px;">
+                    <div id="dalesFace" style="float:left; display: none; margin:10px;transition: transform .2s;">
                         <img src = "${dwface}" style="height:100px;width:100px" style="float:left"/>
                     </div>
                     <div id="dalesVoice" class="speech-bubble" style="float:left;display: none;">
