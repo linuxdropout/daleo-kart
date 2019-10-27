@@ -322,6 +322,7 @@ class Player extends GameObject {
         if (object instanceof AmazonItem) {
             const itemToAdd = GLOBALS.itemData.find(item => item.name === object.itemName)
             socket.emit('getItem', {
+                lobbyName: allPlayers[0].lobby,
                 playerName: this.username,
                 item: itemToAdd,
             })
