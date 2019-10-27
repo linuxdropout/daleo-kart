@@ -12,16 +12,18 @@ const urlParams = new URLSearchParams(window.location.search)
 
 if (!urlParams.has('nodale')) {
     DalesVoice.load()
+
+
+  const welcomeText = `
+  <p>Hey!! Dale here.</p>
+  <p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
+  <p>Come with me and play.... Dale-io Kart!!!</p>
+  <button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>
+  `
+
+  DalesVoice.speak(welcomeText);
+
 }
-
-const welcomeText = `
-<p>Hey!! Dale here.</p>
-<p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
-<p>Come with me and play.... Dale-io Kart!!!</p>
-<button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>
-`
-
-DalesVoice.speak(welcomeText)
 
 // to be sorted later
 setTimeout(() => {
@@ -30,8 +32,15 @@ setTimeout(() => {
         body.innerHTML = ''
         body.append(left)
         body.append(right)
+
+        scoreboardfont = chrome.runtime.getURL('fonts/scoreboard.ttf'),
         head.innerHTML += `
           <style>
+            @font-face {
+              font-family:scoreboard;
+              src: url(${scoreboardfont});
+            }
+
             body {
               display: flex;
               flex-direction: row;
@@ -56,7 +65,8 @@ setTimeout(() => {
               font-size: 20px;
             }
             #score-board {
-              font-weight: bold;
+              font-weight:bold;
+              font-family:scoreboard;
             }
             #basket {
               margin-top: 1rem;
