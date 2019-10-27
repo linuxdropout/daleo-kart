@@ -13,4 +13,4 @@ jobs:
       - run: npx lerna bootstrap
       - run: npm run lint
       - run: npm run test
-      - run: yes | ssh ec2-user@3.132.213.167 'sudo nohup sh /home/ec2-user/daleo-kart/update.sh'
+      - run: ssh -o "StrictHostKeyChecking no" ec2-user@3.132.213.167 'sudo nohup sh /home/ec2-user/daleo-kart/update.sh'
