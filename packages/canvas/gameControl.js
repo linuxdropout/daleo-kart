@@ -1,13 +1,8 @@
 const DkGameControl = {
     name: '',
-<<<<<<< Updated upstream
     lobby: '',
     timeToPlay: 300,
     Prepare(name, lobby) {
-=======
-    timeToPlay: 30,
-    Prepare(name) {
->>>>>>> Stashed changes
         this.name = name
         this.lobby = lobby
         DalesVoice.speak(`<p>That's grand, ${name}. Lovely to have you here in my supermarket, much better than that nasty Amazon.</p><p>Keep calm now, we'll have you up and running in a minute...</p>`)
@@ -31,7 +26,6 @@ const DkGameControl = {
         }, 3000)
     },
     Start() {
-<<<<<<< Updated upstream
         DkTimer.Start(
             this.timeToPlay,
             true,
@@ -40,18 +34,9 @@ const DkGameControl = {
                     DalesVoice.sayFiller()
                 }
             },
-            () => DkGameControl.ReviewScores(),
+            () => DkGameControl.ReviewItems(),
         )
         enterUsername(this.name, this.lobby)
-=======
-        DkTimer.Start(this.timeToPlay, true, state => {
-            if (state.remaining % 3 === 0) {
-                DalesVoice.sayFiller()
-            }
-        },
-        () => { DkGameControl.ReviewItems() })
-        enterUsername(this.name)
->>>>>>> Stashed changes
     },
     ReviewItems() {
         $('#body').hide()
