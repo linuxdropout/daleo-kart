@@ -14,13 +14,12 @@ const urlParams = new URLSearchParams(window.location.search)
 if (!urlParams.has('nodale')) {
     DalesVoice.load()
 
-
-    const welcomeText = `
-  <p>Hey!! Dale here.</p>
-  <p> Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
-  <p>Come with me and play.... Dale-io Kart.... on Supermarket Sweep!!!</p>
-  <button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>
-  `
+    const welcomeText = /* html */`
+        <p>Hey!! Dale here.</p>
+        <p>Why mess around with a boring old Amazon website when you can go wild in the aisles!!</p>
+        <p>Come with me and play.... Dale-io Kart.... on Supermarket Sweep!!!</p>
+        <button id="dkStartGame" style="float:right">Sure thing Dale... I'm in!</button>
+    `
 
     DalesVoice.speak(welcomeText)
 }
@@ -47,6 +46,28 @@ async function makeApiCall(path, method = 'GET', postBody) {
     }
     const response = await fetch(`${host}${path}`, request)
     return response.json()
+}
+
+async function preLoad() {
+    let images = [
+        chrome.runtime.getURL('images/small_tile.jpg'),
+        chrome.runtime.getURL('images/shelving_smaller.png'),
+        chrome.runtime.getURL('images/shopping-cart.png'),
+        chrome.runtime.getURL('images/shopping-cart-left.png'),
+    ]
+
+    const { itemData } = await makeApiCall('/item-data')
+    const itemImages = itemData.map(data => data.imageSrc)
+    images = images.concat(itemImages)
+
+    start(images, itemData)
+}
+
+async function actuallyStartTheGame(playerName, lobbyName) {
+    DkGameControl.Prepare(
+        playerName,
+        lobbyName,
+    )
 }
 
 // to be sorted later
@@ -154,26 +175,20 @@ setTimeout(async () => {
 
         DalesVoice.speak("<p>Marvellous. You've made the right choice.</p><p>Now let's have your name, my lovely.</p>")
 
-        document.getElementById('username-input').value = new Date().getTime()
-        let images = [
-            chrome.runtime.getURL('images/small_tile.jpg'),
-            chrome.runtime.getURL('images/shelving_smaller.png'),
-            chrome.runtime.getURL('images/shopping-cart.png'),
-            chrome.runtime.getURL('images/shopping-cart-left.png'),
-        ]
-
-        const { itemData } = await makeApiCall('/item-data')
-        const itemImages = itemData.map(data => data.imageSrc)
-        images = images.concat(itemImages)
+        document.getElementById('username-input').value = ''
 
         document.getElementById('form-submit').addEventListener('click', () => {
-            console.log(document.getElementById('lobby-input').value)
-            DkGameControl.Prepare(
-                document.getElementById('username-input').value,
-                document.getElementById('lobby-input').value,
-            )
+            const uname = document.getElementById('username-input').value
+            const lname = document.getElementById('lobby-input').value
+
+            if (uname && lname) {
+                actuallyStartTheGame(
+                    uname,
+                    lname,
+                )
+            }
         })
 
-        start(images, itemData)
+        preLoad()
     })
 }, 1000)

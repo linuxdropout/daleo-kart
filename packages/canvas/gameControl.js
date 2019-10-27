@@ -6,41 +6,40 @@ const DkGameControl = {
         // adding some rnd scores in for testing
 
         this.players = allPlayers
-        /*this.players.forEach(player => {
+        /* this.players.forEach(player => {
             player.score = parseInt(Math.random() * 100, 10)
-        })*/
+        }) */
 
         this.players = this.players.sort(
             (a, b) => ((a.score > b.score) ? 1 : ((b.score > a.score) ? -1 : 0)),
         )
-    },   
+    },
     SortScoresDesc() {
         // adding some rnd scores in for testing
 
         this.players = allPlayers
-        /*this.players.forEach(player => {
+        /* this.players.forEach(player => {
             player.score = parseInt(Math.random() * 100, 10)
-        })*/
+        }) */
 
         this.players = this.players.sort(
             (a, b) => ((a.score < b.score) ? 1 : ((b.score < a.score) ? -1 : 0)),
         )
     },
-    ShowScoreboard(){
-        this.SortScoresDesc();
-        if(this.players.length>0){
-            $("#score-board").show();
-            $("#score-board-table").html();
+    ShowScoreboard() {
+        this.SortScoresDesc()
+        if (this.players.length > 0) {
+            $('#score-board').show()
+            $('#score-board-table').html()
 
             let s = ''
             this.players.forEach((player, index) => {
-                s += `<tr><td>${player.name}</td><td style="text-align:right">£${player.score.toFixed(2) }</td><tr>`
-                
+                s += `<tr><td>${player.name}</td><td style="text-align:right">£${player.score.toFixed(2)}</td><tr>`
             })
 
-            $("#score-board-table").html(s);
-        }else{
-            $("#score-board").hide();
+            $('#score-board-table').html(s)
+        } else {
+            $('#score-board').hide()
         }
     },
     Prepare(name, lobby) {
@@ -59,7 +58,7 @@ const DkGameControl = {
 
         setTimeout(() => {
             DkTimer.Start(5, false,
-                state => DalesVoice.simpleSpeak(state.remaining + "..."),
+                state => DalesVoice.simpleSpeak(`${state.remaining}...`),
                 () => {
                     DalesVoice.simpleSpeak('Go wild in the aisles!!!')
                     DkGameControl.Start()
