@@ -56,7 +56,7 @@ const setUpSockets = lobby => {
         scoreBoard.append(newElement)
     })
     socket.on('setItem', scoreData => {
-        if (scoreData.lobby !== lobby) return
+        if (scoreData.lobbyName !== lobby) return
         const playerToGivePoints = allPlayers.find(player => player.name === scoreData.playerName)
         if (playerToGivePoints) {
             playerToGivePoints.basket.push(scoreData.item)
