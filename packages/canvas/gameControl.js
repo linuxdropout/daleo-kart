@@ -26,11 +26,11 @@ const DkGameControl = {
         }, 3000)
     },
     StartCountdown() {
-        DalesVoice.speak(`<p>Right, we're all ready now, ${this.name}, my love.</p><p>You've got ${this.timeToPlay} seconds to grab what you can... </p><p>Get set to go in.... </p>`)
+        DalesVoice.speak(`<p>Right, we're all ready now, ${this.name}, my love.</p><p>You've got ${this.timeToPlay} seconds to grab what you can... </p><p>Get ready to start shopping.... </p>`)
 
         setTimeout(() => {
             DkTimer.Start(5, false,
-                state => DalesVoice.simpleSpeak(state.remaining),
+                state => DalesVoice.simpleSpeak(state.remaining + "..."),
                 () => {
                     DalesVoice.simpleSpeak('Go wild in the aisles!!!')
                     DkGameControl.Start()
@@ -39,8 +39,8 @@ const DkGameControl = {
     },
     Start() {
         DkTimer.Start(this.timeToPlay, true, state => {
-            if (state.remaining % 3 === 0) {
-                if (state.remaining % 6 === 0) {
+            if (state.remaining % 5 === 0) {
+                if (state.remaining % 10 === 0) {
                     this.SortScores()
                     DalesVoice.commentate(this.players)
                 } else {
@@ -67,19 +67,19 @@ const DkGameControl = {
                     <p>
                         You collected one 
                         <span style="color: gold; font-weight:bold;">${basketItem.name}</span>
-                        worth <span style="color: gold; font-weight:bold;">£${basketItem.price}</span>,
+                        worth <span style="color: gold; font-weight:bold;">£ ${basketItem.price}</span>,
                     </p>`
                 } else if (index === basket.length - 1) {
                     s += `
                     <p> 
                         and one <span style="color: gold; font-weight:bold;">${basketItem.name}</span>
-                        worth <span style="color: gold; font-weight:bold;">£${basketItem.price}</span>!
+                        worth <span style="color: gold; font-weight:bold;">£ ${basketItem.price}</span>!
                     </p>`
                 } else {
                     s += `
                         <p>
                             one <span style="color: gold; font-weight:bold;">${basketItem.name}</span>
-                            worth <span style="color: gold; font-weight:bold;">£${basketItem.price}</span>,
+                            worth <span style="color: gold; font-weight:bold;">£ ${basketItem.price}</span>,
                         </p>`
                 }
             })
@@ -141,8 +141,8 @@ const DkGameControl = {
         DalesVoice.speak(`
             <p>Thanks for stopping by, its been lovely.</p>
             <p>I've been Dale Winton and I hope I will see you again soon but please remember...</p>
-            <p>The next time you're at the checkout and you hear the beep... </p>
-            <p>think of the fun you could be having on Supermarket Sweeeeep!</p>
+            <p style="color:gold; font-size:125%">The next time you're at the checkout and you hear the beep... </p>
+            <p style="color:gold; font-size:125%">think of the fun you could be having on Supermarket Sweeeeep!</p>
         `)
 
         setTimeout(() => {
