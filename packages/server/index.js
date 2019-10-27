@@ -9,6 +9,11 @@ const io = require('socket.io')(http)
 const allPlayers = []
 const allItems = require('./itemData.json')
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    if (req.method === 'OPTIONS') return res.status(200).end()
+    next()
+})
 app.use(cors())
 app.use(bodyParser())
 app.use(express.static('www'))
