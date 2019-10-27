@@ -5,8 +5,8 @@ jobs:
       - image: circleci/node:13.0.1
     steps:
       - add_ssh_keys:
-        fingerprints:
-          - "c8:f7:ab:35:ff:2b:1d:75:f2:6b:09:ce:c7:7b:01:09"
+          fingerprints:
+            - "e3:dc:53:b2:61:22:cd:53:48:aa:66:be:db:66:50:88"
       - run: ls -lahR
       - checkout
       - run: npm i
