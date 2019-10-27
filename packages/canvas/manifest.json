@@ -23,6 +23,7 @@
         "scripts/socket.io.js",
         "dkBasket.js",
         "dalesVoice.js",
+        "timer.js",
         "index.js",
         "contentScript.js"
       ]
